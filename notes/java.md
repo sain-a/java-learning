@@ -94,10 +94,75 @@
         }
     }
 ```
-## 1.2引用数据类型
+## 1.1.3引用数据类型
     //可被引用的数据类型
 ### 类：
 ### 接口：
 ### 数组：
 ### 枚举：
 ### 特殊类型值：null
+## 1.2流程控制
+### 1.2.1 if-else条件判断
+### 1.2.2 switch分支语句
+```java
+    public class SwitchDemo {
+        public static void main(String[] args) {
+            int num = 2;
+                switch (num) {
+                case 1:
+                    System.out.println("星期一");
+                    break;
+                case 2:
+                    System.out.println("星期二");
+                    break;
+                case 3:
+                    System.out.println("星期三");
+                    break;
+                default:
+                    System.out.println("输入无效");
+        }
+    }
+}
+```
+### 1.2.3 三元运算符
+    关系表达式?表达式1:表达式2；
+    true->执行表达式1    false->执行表达式2
+### 1.2.4 ==与equals区别
+#### 基本类型
+    int a=10,b=10;
+    System.out.println(a==b)//true
+#### 引用类型
+    String s1 = new String("abc");
+    String s2 = new String("abc");
+    System.out.println(s1==s2);//false
+    System.out.println(s1.equals(s2));//true
+#### 区别
+    ==     -> 比地址（是不是同一个对象）
+    equals -> 比内容（值是否一样）
+    Java有字符串常量池优化：
+    String s1 = "abc",s2 = "abc";
+    System.out.println(s1==s2);//true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
