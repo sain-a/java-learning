@@ -142,6 +142,73 @@
     Java有字符串常量池优化：
     String s1 = "abc",s2 = "abc";
     System.out.println(s1==s2);//true
+### 1.3 循环结构
+#### 1.3.1 for循环
+#### 1.3.2 while循环
+#### 1.3.3 break/continue
+    break 直接结束循环；
+    continue 跳过本次；
+### 1.4 数组与方法
+#### 1.4.1 一维数组、二维数组定义与使用
+    数组一旦创建长度不可修改
+##### 一维数组
+    // 格式1：声明+初始化（推荐，简洁）
+    int[] arr1 = {1, 2, 3, 4, 5};
+    // 格式2：声明数组，指定长度，后续赋值（默认初始化：int为0，String为null）
+    int[] arr2 = new int[5]; // 长度为5，元素默认是0
+    // 格式3：声明与初始化分开（不推荐，冗余）
+    int[] arr3;
+    arr3 = new int[]{10, 20, 30};
+##### 二维数组
+    // 格式1：声明+初始化（推荐，不规则数组也适用）
+    int[][] arr1 = {{1,2}, {3,4,5}, {6}};
+
+    // 格式2：指定行数和列数，后续赋值（默认初始化）
+    int[][] arr2 = new int[3][2]; // 3行2列，所有元素默认0
+    arr2[0][0] = 1; // 给第1行第1列赋值
+    arr2[1][1] = 2;
+
+    // 格式3：先指定行数，列数后续确定（不规则数组）
+    int[][] arr3 = new int[3][];
+    arr3[0] = new int[2]; // 第1行2列
+    arr3[1] = new int[3]; // 第2行3列
+#### 1.4.2 方法定义、参数、返回值
+        修饰符 返回值类型 方法名(参数列表) {
+            // 方法体：要执行的代码
+            return 返回值; // 有返回值时必须写，无返回值可省略
+        }
+#### 1.4.3 参数传递：值传递理解
+```java
+    public class Test {
+        public static void main(String[] args) {
+            int a = 10;
+            change(a);
+            System.out.println(a); // ?
+            int[] arr = {1, 2, 3};
+            changeArr(arr);
+            System.out.println(arr[0]); // ?
+        }
+        public static void change(int x) {
+            x = 100;
+        }
+        public static void changeArr(int[] arr) {
+            arr[0] = 999;
+        }
+    }
+```
+    a=10,arr[0]=999
+##### 基本类型
+        main:
+        a=10
+        调用 change(a)    change:     x = a 的拷贝 = 10
+                                      x = 100(只改副本)
+        main里的a：不变
+##### 数组
+         main:
+         arr->指向[1,2,3]
+         调用 changeArr(arr)  changeArr:   arr = 地址的拷贝（指向同一个数组）
+                                           arr[0] = 999->改的是同一块内存
+    
 
 
 
