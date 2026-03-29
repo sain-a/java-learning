@@ -208,6 +208,152 @@
          arr->指向[1,2,3]
          调用 changeArr(arr)  changeArr:   arr = 地址的拷贝（指向同一个数组）
                                            arr[0] = 999->改的是同一块内存
+# 第二章 面向对象
+## 2.1 类与对象、封装
+### 2.1.1 类与对象的定义
+```java
+public class Main {
+    public static void main(String[] args) {
+        //类：结构体，里面包含了属性（特征）和方法（行为） 会有很多对象
+        //TODO class(类)
+        /*
+        类的语法基本结构
+        class ：关键字（全是小写）
+        类名：类的名称，标识符，遵循规则，类首字母大写
+        class 类名{
+            特征（属性），
+            功能（方法）
+        }
+        
+        //对象：类的实例化（具象化）
+        创建对象的语法：
+        new ： 关键字，表示创建一个具体的对象
+        变量的类型就是对象的类型
+        对象是将内存地址赋值给了变量，使用变量其实引用了内存中的对象，所以称之为引用变量
+        而变量的类型称之为引用数据类型
+        new 类名（）；
+        
+        //特殊对象：空对象（null）,没有引用的对象，称之为空对象，关键字对象
+        //所有引用类型变量的默认值就是null
+        */
+        //问题：做一道菜，红烧排骨
+        //类：菜， 对象：红烧排骨
+        //TODO 1. 先声明类
+        //TODO 2. 创建对象
+        //TODO 3. 声明属性，所谓的属性就是类中的变量
+        //        变量类型  变量名称 = 变量值
+        //        属性类型  属性名称 = 属性值
+        //TODO 4. 声明方法
+        //        void 方法名（参数）{功能代码}
+        //TODO 5. 执行方法
+        //        对象.属性
+        //        对象.方法名（）
+        
+        //引用数据类型
+        Cooking c = new Cooking();
+        c.name = "红烧排骨";
+        c.food = "排骨";
+        c.execute();//？烹饪排骨
+    }
+}
+class Cooking{
+    //特征（属性）
+    //名字
+    String name;
+    //菜的类型
+    String type = "红烧";
+    //食材
+    String food;
+    //佐料
+    String relish = "大料";
+    
+    //TODO 执行
+    void execute(){
+        System.out.println("烹饪"+food);
+    }
+}
+```
+    
+### 2.1.2 成员变量、成员方法
+#### 成员变量
+        成员变量就是属性
+        属性类型 属性名称 = 属性值
+        如果在声明属性的同时初始化赋值，那么所有对象的属性就完全相同
+        //默认初始化
+        //byete,short,int,long=>0
+        //float,double=>0.0
+        //boolean flg = false
+        //char = 空字符
+        //引用数据类型 => null
+
+        //变量的作用域非常小，只在当前大括号内有效
+        //属性不仅在当前类有效，而且可以随着对象在其他地方使用
+        //变量使用前必须初始化，属性不用，JVM会帮助我们自动完成初始化
+#### 成员方法
+        //方法调用方式：对象.方法名（）
+###### 方法参数
+            参数个数，类型，顺序需相匹配
+            当参数个数不相同，但类型相同时，可采用持续的参数语法声明：可变参数
+                void test(String...name){}
+                如果可变参数中还含有其他参数，要把可变参数放在最后
+                    void test(int age,String...name)
+##### 方法参数-传值方式
+```java
+//java中方法参数传递为值传递
+//基本数据类型：数值
+//引用数据类型：引用地址
+//1
+public class Main{
+    public static void main(String[] args){
+        int i = 10;
+        test(i);
+        System.out.println(i);//10
+    }
+    public  static void test(int i){
+        i = i + 10;
+    }
+}
+//2
+public class Main{
+    public static void main(String[] args){
+        String s = "abc";
+        test(s);
+        System.out.println(s);//abc
+    }
+    public  static void test(String s){
+        s = s + 10;
+    }
+}
+//3
+public class Main{
+    public static void main(String[] args){
+        User user = new User();
+        user.name = "zhangsan";
+        System.out.println(user.name);//
+    }
+    public  static void test(User user){
+        user.name="lisi";
+    }
+}
+class User{
+    String name;
+}
+```
+### 2.1.3 封装： private + get/set
+#### 封装的定义
+        把成员变量私有化，外面不能随便看、改，若想访问必须通过提供的公开方法
+#### 为什么要封装
+        保护数据，控制读写权限，代码更安全
+#### 怎么做封装
+        1.成员变量用private修饰
+        2.提供public的getXxx()方法：用来获取值
+        3.提供public的setXxx()方法：用来设置值
+        //构造方法
+            如果不写构造方法，Java会默认提供一个无参构造
+            一旦写了构造方法，默认无参构造就不会再提供
+            对象属性有默认值，但通常需要手动赋值  
+            调用构造方法时，必须匹配参数列表 
+            一般建议：无参 + 有参构造都写
     
 
 
