@@ -1,4 +1,4 @@
-<img width="710" height="1097" alt="image" src="https://github.com/user-attachments/assets/3bb5a325-9154-41d7-8863-fc1d12709a73" /># 🚀 Java Learning（大二下成长记录）
+# 🚀 Java Learning（大二下成长记录）
 
 ## 📚 项目介绍
 这是我大二下阶段的Java学习仓库，记录从基础到后端开发，再到Agent（AI应用）的完整成长路径。
