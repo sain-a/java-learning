@@ -1,4 +1,4 @@
-# 🚀 Java Learning（大二下成长记录）
+<img width="710" height="1097" alt="image" src="https://github.com/user-attachments/assets/3bb5a325-9154-41d7-8863-fc1d12709a73" /># 🚀 Java Learning（大二下成长记录）
 
 ## 📚 项目介绍
 这是我大二下阶段的Java学习仓库，记录从基础到后端开发，再到Agent（AI应用）的完整成长路径。
@@ -32,9 +32,8 @@ java-learning
 
 ## 📅 当前进度
 
-- ✅ Day1-5 Java基础（变量、流程控制、循环、数组）
-- ✅ 完成基础算法题（数组、数学）
-- 🚀 正在进入 OOP（面向对象）
+- Week1 ✅ Java基础 + OOP入门
+- Week2 ⏳ 进行中
 
 ---
 
