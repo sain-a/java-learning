@@ -4,7 +4,7 @@ public class Instanceof {
     public static void main(String[]args){
         Dog dog = new Dog();//Animal animal = new Dog()
         method(dog);
-        Cat cat = new Cat();
+        Cat cat = new Cat();//Animal animal = new Cat()
         method(cat);
     }
     public static void method(Animal animal){
