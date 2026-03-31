@@ -354,10 +354,171 @@ class User{
             对象属性有默认值，但通常需要手动赋值  
             调用构造方法时，必须匹配参数列表 
             一般建议：无参 + 有参构造都写
-    
+## 2.2 继承
+### 2.2.1 extends 继承语法
+#### 作用：让一个类（子类）复用另外一个类（父类）的属性和方法
+#### 关键字：extends
+#### 格式： class 子类 extends 父类{}
+        // 父类
+        class Person {
+            String name;
+            int age;
+            public void eat() {
+                System.out.println("吃饭");
+            }
+        }
+        // 子类
+        class Student extends Person {
+        // 自动拥有 name、age、eat()
+        }
+#### 特点：
+        1.子类拥有父类非私有的成员变量和方法
+        2.子类可以新增自己的属性和方法
+        3.子类可以重写父类方法
+### 2.2.2 super、this关键字
+#### super作用：代表父类对象，用于访问父类内容
+#### super用法：
+        1.访问父类成员变量 super.变量名
+        2.调用父类成员方法 super.方法名（参数）；
+        3.如果父类提供了构造方法，
+            调用父类构造方法（必须在第一行）super();//无参 super(参数)//有参
+        class Student extends Person {
+            public void show() {
+            super.eat(); // 调用父类方法
+            }
+        }
+#### this代表当前
+### 2.2.3 方法重写
+#### 定义：子类对父类已有方法重写方法体
+#### 要求： 方法名、参数列表相同，返回值类型相同或为其子类，权限修饰符不能更严格（父类public,子类不能private）
+        @Override // 自动校验是否重写正确
+        public void eat() {
+            System.out.println("学生在食堂吃饭");
+        }
 
+        重写 vs 重载
+        重写：父子类之间，方法签名完全一样
+        重载：同一个类中，方法名相同、参数不同
+### 2.2.4 Java单继承原因
+    一个类只能继承一个直接父类
+    原因：
+        1.避免二义性
+        2.简化设计
+        3.用接口弥补功能：Java提供接口：一个类可以实现多个接口
+## 2.3 多态
+### 2.3.1 多态的介绍
+        1.前提：
+            a.必须有子父类继承或者接口哦实现关系
+            b.必须有方法的重写（没有重写，多态没有意义），多态主要玩的方法的重写
+            c.new对象：父类引用指向子类对象
+                Fu fu = new Zi()->理解为大类型接收了一个小类型的数据->比如 double b = 10
+        2.注意：
+            多态下不能直接调用子类特有功能
+### 2.3.2 多态的基本使用
+```java
+public class Animal {
+    public void eat(){}
+}
+public class Dog extends Animal{
+    @Override
+    public void eat(){
+        System.out.println("狗啃骨头");
+    }
+    //特有方法
+    public void lookDoor(){
+        System.out.println("狗会看门");
+    }
+}
+public class Cat extends Animal{
+    @Override
+    public void eat(){
+        System.out.println("猫吃鱼");
+    }
+    //特有方法
+    public void catchMouse(){
+        System.out.println("猫会捉老鼠");
+    }
+}public class Test01 {
+    public static void main(String[] args){
+        //原始方式
+        Dog dog = new Dog();
+        dog.eat();//重写的
+        dog.lookDoor();//特有的
 
+        Cat cat = new Cat();
+        cat.eat();//重写的
+        cat.catchMouse();//特有的
 
+        System.out.println("=====================");
+        //多态形式new对象
+        Animal animal = new Dog();//相当于 double b = 10
+        animal.eat();//重写的 animal接收的是dog对象，所以调用的是dog中的eat
+//        animal.lookdoor();//多态前提下，不能直接调用子类特有成员
+        Animal animal1 = new Cat();
+        animal1.eat();//cat重写的
+    }
+}
+```
+### 2.3.3 多态的条件下成员的访问特点
+#### 2.3.3.1 成员变量
+```java
+public class Fu{
+    int num = 1000;
+    public void method(){
+        System.out.println("我是父类中的method方法");
+    }
+}
+public class Zi extends Fu{
+    int num = 100;
+    public void method(){
+        System.out.println("我是子类中的method方法");
+    }
+}
+public class test {
+    public static void main(String[] args) {
+        Fu fu = new Zi();
+        System.out.println(fu.num);父类中的num
+        fu.method();//子类中重写的method方法
+    }
+}
+```
+        看等号左边是谁，先调用谁中的成员变量
+#### 2.3.3.2 成员方法
+        看new的是谁，先调用谁中的成员方法，子类没有，找父类
+#### 2.3.4 多态的好处
+    1.问题描述：
+        如果使用原始方式new对象（等号左右两边一样），既能调用重写的，还能调用继承的，还能调用自己特有的成员
+        但是多态方式new对象，只能调用重写的，不能直接调用子类特有成员，那为啥还用多态
+    2.多态方式和原始方式new对象的优缺点：
+        原始方式：
+            a.优点：既能调用重写的，还能调用父类非私有的，还能调用自己特有的
+            b.缺点：扩展性差
+        多态方式：
+            a.好处：扩展性强
+            b.缺点：不能直接调用子类特有功能
+                Fu fu = new Zi();
+                double b = 10;
+                b = 100L;
+        //    形参传递父类类型，调用此方法父类类型可以接收任意它的子类对象
+        //    传递哪个子类对象，就指向哪个子类对象，就调用哪个子类对象重写的方法
+### 2.3.5 多态中的转型
+#### 2.3.5.1 向上转型
+    1.父类引用指向子类对象
+        好比是：double b = 1
+#### 2.3.5.2 向下转型
+    1.向下转型：好比是强转，将大类型强制转成小类型
+    2.表现方式：
+        父类类型 对象名1 = new 子类对象（）->向上转型-> double b =1
+        子类类型 对象名2 = （子类类型）对象名1 ->向下转型->int i = (int)b
+    3.想要调用子类特有功能，我们就需要向下转型
+#### 2.3.6 转型可能会出现的问题
+        1.如果等号左右两边类型不一致，会出现类型转换异常
+        2.解决：
+            在向下转型之前，先判断类型
+        3.怎么判断类型：instanceof
+            判断结果是boolean
+        4.使用：
+            对象名 instanceof 类型->判断关键字前面的对象是否符合关键字后面的类型
 
 
 
