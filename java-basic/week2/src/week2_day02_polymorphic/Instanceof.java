@@ -2,10 +2,10 @@ package week2_day02_polymorphic;
 
 public class Instanceof {
     public static void main(String[]args){
-        Dog dog = new Dog();//Animal animal = new Dog()
-        method(dog);
-        Cat cat = new Cat();//Animal animal = new Cat()
-        method(cat);
+        Animal animal = new Dog();
+        method(animal);
+        Animal animal1 = new Cat();
+        method(animal1);
     }
     public static void method(Animal animal){
         /*
