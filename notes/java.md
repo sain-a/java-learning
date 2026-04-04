@@ -548,6 +548,273 @@ public class test {
         3.子类继承后，只重写抽象方法实现具体逻辑。
     优点：
         代码复用、流程统一、扩展性强，符合开闭原则。
+## 2.5 接口
+### 2.5.1 接口的定义及使用
+#### 2.5.1.1
+    1.接口：是一个引用数据类型。是一种标准，规则
+    2.关键字：
+        a.interface 接口
+            public interface 接口名{}
+        b.implements 实现
+            实现类 implements 接口名{}
+    3.接口中可以定义的成员：
+        a.jdk7以及之前：抽象方法：public abstract->即使不写public abstract，默认也有。
+                      成员变量：public，static，final 数据类型 变量名 = 值->即使不写也有
+                              final是最终的，被final修饰的变量不能二次赋值，所以一般将final修饰的变量视为常量
+        b.jdk8:
+            默认方法：public default 返回值类型 方法名（形参）{}
+            静态方法：public static 返回值类型 方法名（形参）{}
+        c.jdk9开始：
+            私有方法：
+                private的方法
+#### 2.5.1.2
+    1.定义接口：
+        public interface 接口名{}
+    2.实现：
+        public class 实现类类名 implements 接口名{}
+    3.使用：
+        a.实现类实现接口
+        b.重写接口中的抽象方法
+        c.创建实现类对象（接口不能直接new对象）
+        d.调用重写的方法
+```java
+public interface USB {
+    public abstract void open();
+    public abstract void close();
+}
+public class Mouse implements USB{
+    @Override
+    public void open(){
+        System.out.println("鼠标打开");
+    }
+    @Override
+    public void close(){
+        System.out.println("鼠标关闭");
+    }
+}
+public class Test01 {
+    public static void main(String[] args){
+        Mouse mouse = new Mouse();
+        mouse.open();
+        mouse.close();
+    }
+}
+```
+### 2.5.2 接口中的成员
+#### 2.5.2.1 抽象方法
+    1.定义格式：
+        public abstract 返回值类型 方法名（参数）；
+    2.注意：
+        不写public abstract 默认也有
+    3.使用：
+        a.定义实现类，实现接口
+        b.重写抽象方法
+        c.创建实现类对象，调用重写的方法
+```java
+public interface USB {
+    public abstract void open();
+    String close();
+}
+public class Mouse implements USB{
+    @Override
+    public void open(){
+        System.out.println("鼠标打开");
+    }
+    @Override
+    public String close(){
+        return "鼠标关闭";
+    }
+}
+public class Test01 {
+    public static void main(String[] args){
+        Mouse mouse = new Mouse();
+        mouse.open();
+        System.out.println(mouse.close());
+    }
+}
+```
+#### 2.5.2.2 默认方法
+    1.格式：
+        public default 返回值类型 方法名（形参）{
+            方法体
+            return 结果
+        }   
+    2.使用：
+        a.定义实现类，实现接口
+        b.默认方法可重写，可不重写
+        c.创建实现类对象，调用默认方法
+```java
+public interface USB {
+    //默认方法
+    public default void methodDef(){
+        System.out.println("我是默认方法");
+    }
+}
+public class Mouse implements USB{
+    @Override
+    public  void methodDef(){
+        System.out.println("我是重写接口的默认方法");
+    }
+}
+public class Test01 {
+    public static void main(String[] args){
+        Mouse mouse = new Mouse();
+        mouse.methodDef();
+    }
+}
+```
+#### 2.5.2.3 静态方法
+    1.定义格式：
+        public static 返回值类型 方法名（参数）{
+            方法名
+            return 结果
+        }
+    2.使用：
+        接口名直接调用
+```java
+public interface USB {
+    //默认方法
+    public default void methodDef(){
+        System.out.println("我是默认方法");
+    }
+    //静态方法
+    public static void methodSta(){
+        System.out.println("我是接口中的静态方法");
+    }
+}
+public class Test01 {
+    public static void main(String[] args){
+        Mouse mouse = new Mouse();
+        mouse.methodDef();
+        System.out.println("==========");
+        USB.methodSta();
+    }
+}
+```
+    默认方法和静态方法->可以作为临时加的一个小功能来使用
+### 2.5.3 成员变量
+    1.格式：
+        pubilc static final 数据类型 变量名 = 值
+    2.相关知识点：final代表最终的，被它修饰的变量不能二次赋值，可以视为常量
+    3.特点：
+        不写 pubilc static final 默认也有
+    4.使用：
+        接口名直接调用
+    5.注意：
+        a.被static final修饰的成员变量需要手动赋值
+        b.习惯上我们会将static final修饰的成员变量名大写
+```java
+public interface USB {
+   public static final int NUM1 = 100;
+   int NUM2 = 200;
+}
+public class Test01 {
+    public static void main(String[] args){
+        System.out.println(USB.NUM1);
+        System.out.println(USB.NUM2);
+    }
+}
+```
+### 2.5.4 接口的特点
+    1.接口可以多继承->一个接口可以继承多个接口
+        public interfaceA extends InterfaceB,InterfaceC{}
+    2.接口可以多实现->一个实现类可以实现一个或者多个接口
+        public clss InterfaceImpl implements InterfaceA,InterfaceB{}
+    3.一个子类可以继承一个父类的同时可以实现一个或者多个接口
+        public class zi extends Fu implements InterfaceA,InterfaceB{}
+    4.注意：
+        继承也好，实现接口也罢，只要是父类中或者接口的抽象方法，子类或者实现类都要重写
+    当一个类实现多个接口时，如果接口中的抽象方法有重名且参数一样的，只需要重写一次
+```java
+public interface InterfaceA {
+    public abstract void method();
+}
+public interface InterfaceB {
+    public abstract void method();
+}
+public class InterfaceImpl implements InterfaceA,InterfaceB{
+    @Override
+    public void method() {
+        System.out.println("重写的method方法");
+    }
+}
+```
+    当一个类实现多个接口时，如果多个接口中默认方法有重名的，且参数一样的，必须重写一次默认方法
+```java
+public interface InterfaceA {
+    public abstract void method();
+    public default void methodDef(){
+        System.out.println("我是接口A中的默认方法");
+    }
+}
+public interface InterfaceB {
+    public abstract void method();
+    //    public default void methodDef(){
+//        System.out.println("我是接口B中的默认方法");
+//    }
+    public default void methodDef(int a){
+        System.out.println("我是接口B中的默认方法");
+    }
+}
+public class InterfaceImpl implements InterfaceA,InterfaceB{
+    @Override
+    public void method() {
+        System.out.println("重写的method方法");
+    }
+
+//    @Override
+//    public void methodDef() {
+//        System.out.println("重写后的");
+//    }
+}
+public class Test01 {
+    public static void main(String[] args) {
+        InterfaceImpl anInterface = new InterfaceImpl();
+        anInterface.methodDef();
+        anInterface.methodDef(10);
+    }
+}
+```
+### 2.5.5 接口和抽象类的区别
+        相同点：
+            a.都位于继承体系的顶端，用于被其他类实现或继承
+            b.都不能new
+            c.都包含抽象方法，其子类或者实现类都必须重写这些抽象方法
+        不同点：
+            a.抽象类：一般作为父类使用，可以有成员变量，构造，成员方法，抽象方法等
+            b.接口：成员单一，一半抽取接口，抽取的都是方法，视为功能的大集合
+            c.类不能多继承，但是接口可以
+### 2.5.6 Comparable 接口实现
+        1.接口作用：
+            java.lang.Comparable<T>是java内置的排序接口，让实现类的对象具可比较大小的能力，从而支持Collection.sort()|、Arrays.sort()等排序方法
+        2.接口定义：
+            public interface Comparable<T>{
+                //抽象方法：比较当前对象（this）和指定对象（o）的大小
+                public int compareTo(T o);
+            }
+        3.compareTo()方法的返回值规则
+            当前对象<目标对象 ->返回负数
+            当前对象=目标对象 ->返回0
+            当前对象>目标对象 ->返回正数
+## 2.6常用类
+### 2.6.1 String
+#### 2.6.1.1 String介绍
+    1.概述：String类代表字符串
+    2.特点：
+        a.Java中的所有字符串字面值（如"abc"）都作为此类的实例（对象）实现
+            凡是带双引号，都是String的对象
+            String s = "abc";"abc"是对象，String是对象的数据类型，s是对象名
+        b.字符串是常量，它们的值在创建之后不能更改
+            String s = "hello"
+            s+="world"->会产生新对象
+        c.String对象是不可变的，所以可以共享
+            String s1 = "abc";
+            String s2 = "abc";
+#### 2.6.1.2 String实现原理
+#### 2.6.1.3 String的创建
+### 2.6.1.2 String的方法
+### 2.6.1.3 String不可变性原理
+### 2.6.2 StringBuilder类
 
 
 
