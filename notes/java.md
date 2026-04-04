@@ -810,12 +810,172 @@ public class Test01 {
         c.String对象是不可变的，所以可以共享
             String s1 = "abc";
             String s2 = "abc";
+            s1 == s2//true,==比地址
 #### 2.6.1.2 String实现原理
+    1.jdk8的时候：String底层是一个被final修饰的char数组->private final char[] value;
+    2.jdk9开始到最后，底层是一个被final修饰的byte数组->private final byte[] value;
+        一个char类型占2字节，一个byte类型占一个字节->节省内存空间
+    字符串定义完之后，数组就创建好了，被final一宿是，数组里的地址值直接定死
 #### 2.6.1.3 String的创建
-### 2.6.1.2 String的方法
-### 2.6.1.3 String不可变性原理
-### 2.6.2 StringBuilder类
+    1.String()->利用String的无参构造创建
+        String s1 =new String();
+        System.out.println(s1);
+    2.String(Stirng original)->根据字符串创建Stirng对象
+        String s2 = new String("abc");
+        System.out.println(s2);
+    3.Stirng(char[] value)->根据char宿主创建String对象
+        char[] chars = {'a','b','c'};
+        String s3 = new String(chars);
+        System.out.println(s3);
+    4.String(byte[] bytes)->通过使用平台的默认字符集解码指定的byte数组，构造一个新的String
+                                a.平台：操作系统
+                                b.操作系统默认字符集：GBK
+                                    GBK：一个中文占2个字节
+                                    UTF-8：一个中文占3个字节
+                                    而且，中文对应的字节一般都是负数
+        byte[] bytes = {97,98,99};
+        String s4 = new String(bytes);
+        System.out.println(s4);//abc
+    5.简化形式：
+        Stirng 变量名 = "";
+    
+    6.String(char[]value,int offset,int count)->将char数组的一部分转成String对象
+        value：要转String的char数组
+        offset:从数组的哪个索引开始转
+        count：转多少个
 
+        char[] chars = {'a','b','c'};
+        String s1 = new String(chars,1,2);
+        System.out.println(s1);
+    7.String(byte[]value,int offset,int count)->将byte数组的一部分转成String对象
+        value：要转String的byte数组
+        offset:从数组的哪个索引开始转
+        count：转多少个
+### 2.6.2 String的方法
+#### 2.6.2.1 判断方法
+    equals(String s)->比较字符串内容 "abc".equals("ABC")//false
+    equalIgnoreCase(String s)->比较字符串内容，忽略大小写 "abc".equalsIgnoreCase("ABC")//false
+    isEmpty()->判断字符串是否为空 "" .isEmpty()//true
+    startsWith(String prefix)->判断字符串是否以指定前缀开头 "HelloWorld".startsWith("Hello")//true
+    endsWith(String suffix)->判断字符串是否以指定后缀结尾 "HelloWorld".endsWith("World")//true
+#### 2.6.2.2 获取方法
+    length()->获取字符串长度 "abc".length()//3
+    concat()->字符串拼接，返回新串 "abc".concat("hh")//abchh
+    charAt(int index)->获取指定索引位置的字符（索引从 0 开始）"abc".charAt(1)//'b'
+    indexOf(String str)->获取指定子串第一次出现的索引（找不到返回 - 1) "abcabc".indexOf("ab")//0
+    lastIndexOf(String str)->获取指定子串最后一次出现的索引 "abcabc".lastIndexOf("ab")//3
+    substring(int beginIndex)->从指定索引开始，截取到字符串末尾 "HelloWorld".substring(5)//"World"
+    substring(int beginIndex, int endIndex)->截取[beginIndex, endIndex)之间的子串（左闭右开） "HelloWorld".substring(0,5)//"Hello"
+#### 2.6.2.3 转换方法
+    toCharArray()->将字符串转成char数组
+    getBytes()->将字符串转成byte数组
+    replace(char oldChar, char newChar)->替换字符串中所有指定字符 "abcabc".replace('a','x')//"xbcxbc"
+    replace(String oldStr, String newStr)->替换字符串中所有指定子串	"abcabc".replace("ab","xy")//"xycxyc"
+    getBytes(String charsetName)->按照指定的编码将字符串转成byte数组 byte[] bytes = "你好".getBytes("utf-8")//-28,-67,-96,-27,-91,-67
+#### 2.6.2.4 分割方法
+    split(String regex)	按指定规则分割字符串，返回字符串数组	"a,b,c".split(",")	["a","b","c"]
+        注意：regex写的是正则表达式-> . 在正则表达式中代表任意一个字符，所以需要转义\\.
+#### 2.6.2.5 其他方法
+    contains(String s)->判断老串中是否包含指定的串
+    endsWith(Stirng s)->判断老串是否以指定的串结尾
+    startsWith(String s)->判断老串是否以指定的串开头
+    toUpperCase()	把字符串全部转为大写	"hello".toUpperCase()	"HELLO"
+    toLowerCase()	把字符串全部转为小写	"HELLO".toLowerCase()	"hello"
+    trim()	去除字符串前后的空白字符（空格、制表符等）" abc ".trim()	"abc"
+### 2.6.3 StringBuilder类
+#### 2.6.3.1 StringBuilder的介绍
+        1.概述：一个可变的字符序列，此类提供了一个与StringBuffer兼容的一套API，但是不保证同步(线程不安全，效率高)
+        2.作用：主要是字符串拼接
+        3.问题：
+            a.String也能做字符串拼接，直接用+即可，但是为啥还要用StringBuilder去拼接？
+            b.原因：
+                String每拼接一次，就会产生新的字符串对象，就会在堆内存中开辟新的空间，如果拼接次数多了，会占用内存，效率比较低
+                StringBuilder，自带一个缓冲区（没有被final修饰的byte数组）拼接字符串之后都会在此缓冲区中保存，在拼接过程中，不会随意产生新对象，节省内存【=
+        4.StringBuikder的特点：
+            a.底层自带缓冲区，此缓冲区是没有被final修饰的byte数组，默认长度为16
+            b.如果超出数组长度，数组会自动扩容
+                创建一个新长度的数组，将老数组的元素复制到新数组中，然后将新数组的地址重新复制给老数组
+            c.默认每次扩容老数组的2倍+2
+                如果一次性添加的数据超出了默认的扩容数长度（2倍+2），比如存了36个字符，超出了第一次扩容的34，就按照实际数据个数为准，就是以36扩容
+#### 2.6.3.2 StringBuilder的使用
+    1.构造：
+        // 方式1：空构造，初始容量16
+        StringBuilder sb = new StringBuilder();
+        // 方式2：指定初始容量（推荐，避免扩容浪费）
+        StringBuilder sb = new StringBuilder(100);
+        // 方式3：用已有字符串初始化
+        StringBuilder sb = new StringBuilder("abc");
+    2.常用方法：
+        append(任意类型)->拼接内容（最常用）sb.append("a").append(123).append(true)//"a123true"
+        reverse()->反转字符串 sb.reverse()（原 sb 为 "abc")//"cba"
+        toString()-> StringBuilder 转为 String(必须用，才能用 String 方法) String s = sb.toString()//String 类型的 "cba"
+        insert(int index, 任意类型)->在指定索引插入内容 sb.insert(1, "xyz")(原 sb 为 "abc")//"axyzbc"
+        delete(int start, int end)->删除 [start, end) 之间的内容	sb.delete(1,3)(原 sb 为 "axyzbc")//"azbc"
+        deleteCharAt(int index)->删除指定索引的字符	sb.deleteCharAt(1)（原 sb 为 "azbc"）//"abc"
+        replace(int start, int end, String str)->替换 [start, end) 之间的内容	sb.replace(0,1,"x")（原 sb 为 "abc"）//"xbc"
+    String;拼接字符串效率低，每拼接一次，都会产生一个新的字符串对象，耗费内存资源
+    StringBuilder和StringBuffer区别：
+        a.相同点：用法一样，作用一样
+        b.不同点：
+            StringBuilder:拼接效率比StringBuffer高，线程不安全
+            StringBuffer:效率比较底,线程安全
+    拼接效率：StringBuilder>StringBuffer>String
+### 2.6.4 String不可变性原理
+        1. 不可变性定义:
+            String 对象一旦创建，其内部的字符内容 无法被修改，看似修改（如拼接、替换），本质是创建了一个新的 String 对象，原对象内容不变。
+        2. 底层原理:
+            JDK 8 中，String 类底层是 private final char[] value;（JDK 9 改为 byte[]），关键在于两个关键字：
+            final：修饰数组 → 数组的地址不能改变（不能重新指向新的数组）
+            private：修饰数组 → 外部无法直接访问、修改数组中的元素
+        3. 为什么设计成不可变？
+            安全：避免字符串内容被意外修改（如密码、路径等敏感信息）
+            高效：字符串常量池复用（如 "abc" 多次使用，只创建一个对象，节省内存）
+            线程安全：不可变对象天生线程安全，多线程环境下无需同步
+        4. 示例验证（直观看到不可变性）
+            String s1 = "abc";
+            String s2 = s1; // s2 和 s1 指向同一个对象（常量池）
+            s1 += "d"; // 看似修改s1，实际创建新对象 "abcd"
+            System.out.println(s1); // abcd（新对象）
+            System.out.println(s2); // abc（原对象未变）
+            结论：s1 拼接后，指向了新的 String 对象，原对象 "abc" 内容没有任何变化，体现了不可变性。
+### 2.6.5 LocalDate等日期类
+#### 2.6.5.1 LocalDate本地日期
+###### 获取LocalDate对象
+        1.概述：Localate是一个不可变的日期时间对象，表示日期，通常被视为年月日
+        2.获取：
+            static LocalDate nonw()->创建LocalDate对象
+                LocalDate today = LocalDate.now();
+            static LocalDate of(int year,int month,int dayOfMonth)->创建LocalDate对象，设置年月日
+                LocalDate birthday = LocalDate.of(2004, 9, 10);
+###### LocalDateTime对象
+        1.概述：LocalDateTime是一个不可变的日期时间对象，代表日期时间，通常被视为年月日时分秒
+        2.获取：
+            static LocalDateTime now()->创建LocalDateTime对象
+            static LocalDateTime of(int year,Mouth mouth,int dayOfMouth,int hour,int minute,int second)->创建LocalDateTime对象，设置年月日时分秒
+###### 获取日期字段的方法：名字是get开头
+        int getYear()->获取年份
+        int getMonthValue()->获取月份
+        int getDayOfMonth()->获取月中第几天
+###### 设置日期字段的方法：名字是with开头
+        LocalDate withYear(int year)->设置年份
+        LocalDate withMouse(int month)->设置月份
+        LocalDate withDayOfMouse(int day)->设置月中的天数
+###### 日期字段偏移
+        设置日期字段的偏移量，方法名plus开头，向后偏移
+        设置日期字段的偏移量，方法名minus开头，向前偏移
+            LocalDate today = LocalDate.now();
+            LocalDate nextYear = today.plusYears(1); // 明年今日
+            LocalDate lastMonth = today.minusMonths(1); // 上个月今日
+            LocalDate after10Days = today.plusDays(10); // 10天后
+###### 日期比较
+        LocalDate date1 = LocalDate.of(2026, 4, 4);
+        LocalDate date2 = LocalDate.of(2026, 5, 1);
+        // isAfter()：判断当前日期是否在另一个日期之后
+        boolean isAfter = date2.isAfter(date1); // true（5月1日在4月4日之后）
+        // isBefore()：判断当前日期是否在另一个日期之前
+        boolean isBefore = date1.isBefore(date2); // true
+        // isEqual()：判断两个日期是否相等
+        boolean isEqual = date1.isEqual(LocalDate.of(2026,4,4)); // true
 
 
 
