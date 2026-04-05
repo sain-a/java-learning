@@ -511,6 +511,11 @@ public class test {
         父类类型 对象名1 = new 子类对象（）->向上转型-> double b =1
         子类类型 对象名2 = （子类类型）对象名1 ->向下转型->int i = (int)b
     3.想要调用子类特有功能，我们就需要向下转型
+        Animal a = new Dog();
+        if (a instanceof Dog) {
+            Dog d = (Dog) a;
+            d.bark();
+        }
 #### 2.3.6 转型可能会出现的问题
         1.如果等号左右两边类型不一致，会出现类型转换异常
         2.解决：
