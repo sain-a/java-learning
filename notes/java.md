@@ -65,7 +65,7 @@
             Integer i2 = Integer.valueOf(100);
             System.out.println(i2);//100
             //自动装箱：基本数据类型可以自动转换为对应的包装类型
-            //Integer i3 = Integer.valueof(100);
+            //Integer i3 = Integer.valueOf(100);
             Integer i3 = 100;
             //自动拆箱：包装类型可以自动转换为对应的基本数据类型
             //int num = i3.intValue();
@@ -982,21 +982,132 @@ public class Test01 {
         // isEqual()：判断两个日期是否相等
         boolean isEqual = date1.isEqual(LocalDate.of(2026,4,4)); // true
 
+# 第三章 集合框架
+## 3.1 List集合        
+            分类：
+            a.单列集合：一个元素就一个组成部分：
+                list.add("张三")
+            b.双列集合:一个元素有两部分组成：key和value
+                map.put("1"，"张三"）-> key,value叫做键值对
+![collection.jpg](img/collection.jpg)            
+### 3.1.1 ArrayList 与 LinkedList
+#### ArrayList
+    1.概述：AraayList是List接口的实现类
+    2.特点：
+        a.元素有序->按什么顺序存，就按什么顺序取
+        b.元素可重复
+        c.有索引->可以利用索引取操作元素
+        d.线程不安全 
+    3.数据结构：数组
+#### LinkedList
+    1.概述：LinkedList是List接口的实现类
+    2.特点：
+        a.元素有序
+        b.元素可重复
+        c.有索引->仅仅指的是有操作索引的方法，不代表本质上具有索引
+        d.线程不安全
+    3.数据结构：双向链表 
+### 3.1.2 常用方法：增删查改(两者通用)
+        创建对象：
+            // 1. 创建 ArrayList
+                List<String> arrayList = new ArrayList<>();
+            // 2. 创建 LinkedList
+                List<String> linkedList = new LinkedList<>();
+        1.增
+            add(E e)->往集合末尾添加元素（最常用）arrayList.add("Java"); → 集合：[Java]
+            add(int index, E e)->往指定索引位置添加元素（索引从 0 开始）arrayList.add(1, "Python"); → [Java, Python]
+            addAll(Collection c)->把另一个集合的所有元素添加到当前集合末尾 
+                    List<String> list2 = Arrays.asList("C++", "Go");
+                    arrayList.addAll(list2); → [Java, Python, C++, Go]
+        2.删
+            remove(int index)->删除指定索引的元素，返回被删除的元素 arrayList.remove(1); → 删除 Python，集合变为 [Java, C++, Go]
+            remove(Object o)->删除指定内容的元素（删除第一个匹配的）arrayList.remove("Java"); → 集合变为 [C++, Go]
+        如果泛型为Integer，remove中直接传入整数，默认调用按指定索引删除元素的remove，若此时list中没有2索引，会越界
+        解决：将2包装成包装类，变成包装类后，其父类就是Object了
+        //list.remove(2)->list.remove(Integer.valueOf(2));
+            clear()	清空集合中所有元素	arrayList.clear(); → 集合变为空
+        3.查
+            get(int index)->获取指定索引的元素（最常用）	arrayList.get(0); → 获取第一个元素
+            indexOf(Object o)->获取指定元素第一次出现的索引（找不到返回 - 1）arrayList.indexOf("Go"); → 返回 1
+            lastIndexOf(Object o)->获取指定元素最后一次出现的索引	arrayList.add("Go"); arrayList.lastIndexOf("Go"); → 返回 2
+            contains(Object o)->判断集合中是否包含指定元素（返回 true/false）arrayList.contains("C++"); → true
+            isEmpty()->判断集合是否为空（返回 true/false）arrayList.isEmpty(); → false
+            size()->获取集合中元素的个数（最常用）arrayList.size(); → 3
+        4.改
+            set(int index, E e)->用指定元素替换指定索引的元素，返回被替换的元素 arrayList.set(0, "Java"); → 把第一个元素改为 Java
+        5.遍历
+            List<String> list = new ArrayList<>();
+            list.add("A");
+            list.add("B");
+            list.add("C");
+            // 方式1：普通for循环（用索引，和数组类似，ArrayList更适合）
+            for (int i = 0; i < list.size(); i++) {
+                System.out.print(list.get(i) + " ");
+            }
+            // 方式2：增强for循环（最简洁，通用）
+            for (String s : list) {
+                System.out.print(s + " ");
+            }
+            // 方式3：迭代器（遍历过程中删除元素推荐用）
+            Iterator<String> it = list.iterator();
+            while (it.hasNext()) {
+                String s = it.next();
+                System.out.print(s + " ");
+                // 遍历中删除：it.remove();
+            } 
+        注意：
+        索引从 0 开始，超出索引范围会报 IndexOutOfBoundsException（数组越界异常）
+        add(int index, E e) 插入元素时，后面的元素会 “向后移动”，不是覆盖
+        remove(Object o) 只能删除第一个匹配的元素，若有多个相同元素，需循环删除
+        
+        7.LinkedList:
+            pop()->从堆栈处弹出一个元素
 
+            push(E e)->将元素推入此列表所表示的堆栈
+### 3.1.3 底层与性能对比
+#### ArrayList
+        1.ArrayList构造方法：
+            a.ArrayList()构造一个初始容量为十的空列表
+            b.ArrayList(int initialCapacity)构造具有指定容量的空列表
+        2.ArrayList源码总结：
+            a.不是一new底层就会创建初始容量为10的空列表，而是第一次add的时候才会创建初始化容量为10的空列表
+            b.ArrayList底层是数组，那么为啥集合长度可变？
+                ArrayList底层会自动扩容->Arrays.copyOf
+        3.扩容多少倍？
+            1.5倍
+        4.扩容本质：创建一个新的更大的数组，把原数组的元素复制过去（耗时，尽量提前指定容量）
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        ArrayList<String> list = new ArrayList<String>() ->我们现在想用都是new
+        但是将来开发中不会想使用就new集合，都是调用一个方法，查询出很多数据来，此方法返回一个集合，自动将查询除了的数据放到
+        集合中，我们想在页面上展示数据，遍历集合
+        而且将来调用方法，返回的集合类型，一般都是接口类型
+        List<泛型> list = 对象.查询方法()
+        5.性能分析
+            查（get (index)）	极快（O (1)）	直接通过索引定位数组元素，和数组一样快
+            改（set (index, e)）	极快（O (1)）	直接通过索引找到元素，替换值即可
+            增（add 末尾）	快（O (1)）	直接往数组末尾加元素，不移动其他元素；若触发扩容，会慢一点
+            增（add 中间）	慢（O (n)）	插入位置后面的所有元素，都要向后移动一位
+            删（删中间）	慢（O (n)）	删除位置后面的所有元素，都要向前移动一位
+#### LinkedList
+        1.LinkedList底层成员
+            transient int size = 0; 元素个数
+            transient Node<E> first; 第一个节点对象
+            transient Node<E> last; 最后一个节点对象
+        2.Node代表的节点对象
+            private static class Node<E>{
+                E item;//节点上的元素
+                Node<E> next;//记录着下一个节点地址
+                Node<E> prev;//记录着上一个节点地址
+                Node(Node<E> prev,E element, Node<E> next){
+                    this.item = item;
+                    this.next = next;
+                    this,prev = prev;
+                }
+            }
+        3.性能分析：
+            查（get (index)）	慢（O (n)）	没有索引，只能从链表头 / 尾开始，逐个遍历到指定位置
+            改（set (index, e)）	慢（O (n)）	先遍历找到指定节点，再修改值
+            增（add 末尾 / 开头）	极快（O (1)）	直接创建新节点，修改尾节点 / 头节点的指向，不用移动其他元素
+            增（add 中间）	快（O (1)）	找到插入位置的前后节点，直接修改指向即可，不用移动其他元素（关键优势）
+            删（删中间）	快（O (1)）	找到删除节点的前后节点，修改指向，直接删除节点，不用移动其他元素
+        LinkedList 还实现了 Deque 接口，能当队列、栈使用（如 addFirst()、addLast()），这是它的额外优势。
