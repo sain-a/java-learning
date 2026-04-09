@@ -989,7 +989,8 @@ public class Test01 {
                 list.add("张三")
             b.双列集合:一个元素有两部分组成：key和value
                 map.put("1"，"张三"）-> key,value叫做键值对
-![collection.jpg](img/collection.jpg)            
+![collection.jpg](img/collection.jpg)
+
 ### 3.1.1 ArrayList 与 LinkedList
 #### ArrayList
     1.概述：AraayList是List接口的实现类
@@ -1111,3 +1112,143 @@ public class Test01 {
             增（add 中间）	快（O (1)）	找到插入位置的前后节点，直接修改指向即可，不用移动其他元素（关键优势）
             删（删中间）	快（O (1)）	找到删除节点的前后节点，修改指向，直接删除节点，不用移动其他元素
         LinkedList 还实现了 Deque 接口，能当队列、栈使用（如 addFirst()、addLast()），这是它的额外优势。
+## 3.2 Set集合
+    1.Set接口并没有对Collection接口进行功能上的扩充，而且所有Set集合底层都是依赖Map实现
+        Set和Map密切相关，Map的遍历需要先变成单列集合，只能变成set集合
+    2.特点：
+        a.无序：存储顺序和添加顺序不一致（无索引，不能通过 get(index) 获取元素）
+        b.不可重复：集合中不允许存储重复元素，自动去重
+### 3.2.1 HashSet、LinkedHashSet
+#### HashSet
+    1.概述：HashSet是Set接口的实现类
+    2.特点：
+        a.元素唯一
+        b.元素无序
+        c.无索引
+        d.线程不安全
+    3.数据结构：哈希表
+        a.Jdk8之前：哈希表 = 数组+链表
+        b.Jdk8之后：哈希表 = 数组+链表+红黑树
+                    加入红黑树的目的：查询快
+    4.方法：和collection一样
+    5.遍历：
+        a.增强for
+        b.迭代器
+```java
+public class Test {
+    public static void main(String[] args) {
+        Set<String> set = new HashSet<>();
+        set.add("A");
+        set.add("B");
+        set.add("C");
+        System.out.println(set);
+// 方式1：增强for循环（最常用）
+        for (String s : set) {
+            System.out.print(s + " ");
+        }
+        // 方式2：迭代器
+        Iterator<String> it = set.iterator();
+        while (it.hasNext()) {
+            System.out.print(it.next() + " ");
+        }
+    }
+}
+```
+#### LinkedHashSet
+    1.概述：LinkedHashSet extends Hashset
+    2.特点：
+        a.元素唯一
+        b.元素有序
+        c.无索引
+        d.线程不安全
+    3.数据结构：哈希表+双向链表
+    4.用法：和HashSet一样
+### 3.2.2 哈希值
+    1.概述：是由计算机算出来的一个十进制数，可以看做是对象的地址值
+    2.获取对象的获取值，使用的是Object中的方法
+        public native int hashCode()
+    3.注意：如果重写了hashCode方法，计算的就是对象内容的哈希值了
+    4.总结：
+        a.哈希值不一样，内容肯定不一样
+        b.哈希值一样，内容也有可能不一样
+```java
+public class Person{
+    private String name;
+    private Integer age;
+    public Person(){}
+    public Person(String name,Integer age){
+        this.age=age;
+        this.name=name;
+    }
+    public String getName(){return name;}
+    public void setName(String name){this.name = name;}
+    public Integer getAge(){return age;}
+    public void setAge(Integer age){this.age = age;}
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(name, person.name) && Objects.equals(age, person.age);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+public class Demo01Hash{
+    public static void main(String[] args) {
+        Person p1 = new Person("张三",18);
+        Person p2 = new Person("张三",18);
+        System.out.println(p1);//week3_day02_Set.Person@3b07d329
+        System.out.println(p2);//week3_day02_Set.Person@41629346
+        
+        System.out.println(p1.hashCode());
+        System.out.println(p2.hashCode());
+//        
+//        System.out.println(Integer.toHexString(990368553));//3b07d329
+//        System.out.println(Integer.toHexString(1096979270));//41629346
+        
+        System.out.println("===================");
+        String s1 = "abc";
+        String s2 = new String("abc");
+        System.out.println(s1.hashCode());//96354
+        System.out.println(s2.hashCode());//96354
+        
+        System.out.println("===================");
+        String s3 = "通话";
+        String s4 = "重地";
+        System.out.println(s3.hashCode());//1179395
+        System.out.println(s4.hashCode());//1179395
+    }
+}
+```
+    如果不重写hashCode方法，默认计算对象的哈希值
+    如果重写了HashCode方法，计算的是对象内容的哈希值
+### 3.2.3 hashCode 与 equals 机制
+    1. 两个方法的本质  
+        equals(Object obj)：Object 类的方法，默认比较对象地址；String、Integer 等类已重写，比较内容
+        hashCode()：Object 类的方法，返回对象的哈希码（int 整数），本质是对象的内存地址转换值
+    2. Java 规范的强制约定（必须遵守）
+        如果两个对象通过 equals() 判断为相等，那么它们的 hashCode() 必须相等；反之，hashCode() 相等的两个对象，equals() 不一定相等（哈希碰撞）。
+        简单说：equals 相等 → hashCode 一定相等；hashCode 相等 → equals 不一定相等
+    3. 为什么要同时重写？
+        如果只重写 equals()，不重写 hashCode()：
+            两个内容相同的对象，equals() 返回 true，但 hashCode() 不同（默认地址值）
+            存入 HashSet 时，会被判定为不同对象，无法去重，违反 Set 不可重复的特性
+### 3.2.4 去重原理
+    先比hashCode,再比equals（哈希表去重）
+    1.先计算元素哈希值，再比较内容
+    2.先比较哈希值，如果哈希值不一样，存
+    3.如果哈希值一样，再比较内容
+        a.如果哈希值一样，内容不一样，存
+        b.如果哈希值一样，那内容也一样，直接去重复
+    总结：
+    1.如果HashSet存储自定义类型去重复要重写hashCode和equals方法，让HashSet比较属性的哈希值以及属性的内容
+    2.如果不重写hashCode和equals方法，默认调用Object中的，不同的对象，肯定哈希值不一样，equals比较对象的地址值不一样，使用此时即使对象的属性值一样也不能去重复
+
+    TreeSet去重
+    TreeSet 去重的核心逻辑：基于 compareTo() 方法的返回值
+    当向 TreeSet 添加元素时，调用元素的 compareTo() 方法，与集合中已有元素比较
+    返回 0：判定为重复元素，不存储
+    返回正数 / 负数：判定为不同元素，按排序规则插入红黑树
+    一句话总结：compareTo 返回 0 = 重复，不存储

@@ -32,9 +32,9 @@ java-learning
 
 ## 📅 当前进度
 
-- Week1 ✅ Java基础 + OOP入门
-- Week2 ⏳ 进行中
-
+- Week1 ✅ Java基础 + OOP入门（已完成）
+- Week2 ✅ 面向对象设计（继承 / 多态 / 抽象 / 接口）（已完成）
+- Week3 ⏳ 集合框架（进行中）
 ---
 
 ## 🛠 技术栈
