@@ -10,16 +10,4 @@ public abstract class Hero {
     public void show(){
         System.out.println("英雄："+name);
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Hero)) return false;
-
-        Hero hero = (Hero) o;
-        return this.name.equals(hero.name);
-    }
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
 }

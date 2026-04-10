@@ -1,9 +1,9 @@
 package week3_day01_List;
 
-import week2_day06_OOP.GameRoles.Hero;
-import week2_day06_OOP.GameRoles.Mage;
-import week2_day06_OOP.GameRoles.Skill;
-import week2_day06_OOP.GameRoles.Warrior;
+import GameRoles.Hero;
+import GameRoles.Mage;
+import GameRoles.Skill;
+import GameRoles.Warrior;
 
 import java.util.ArrayList;
 import java.util.List;

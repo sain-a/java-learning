@@ -125,8 +125,10 @@
 }
 ```
 ### 1.2.3 三元运算符
-    关系表达式?表达式1:表达式2；
-    true->执行表达式1    false->执行表达式2
+```java
+关系表达式?表达式1:表达式2；
+true->执行表达式1    false->执行表达式2
+```
 ### 1.2.4 ==与equals区别
 #### 基本类型
     int a=10,b=10;
@@ -142,13 +144,13 @@
     Java有字符串常量池优化：
     String s1 = "abc",s2 = "abc";
     System.out.println(s1==s2);//true
-### 1.3 循环结构
+## 1.3 循环结构
 #### 1.3.1 for循环
 #### 1.3.2 while循环
 #### 1.3.3 break/continue
     break 直接结束循环；
     continue 跳过本次；
-### 1.4 数组与方法
+## 1.4 数组与方法
 #### 1.4.1 一维数组、二维数组定义与使用
     数组一旦创建长度不可修改
 ##### 一维数组
@@ -162,12 +164,12 @@
 ##### 二维数组
     // 格式1：声明+初始化（推荐，不规则数组也适用）
     int[][] arr1 = {{1,2}, {3,4,5}, {6}};
-
+    
     // 格式2：指定行数和列数，后续赋值（默认初始化）
     int[][] arr2 = new int[3][2]; // 3行2列，所有元素默认0
     arr2[0][0] = 1; // 给第1行第1列赋值
     arr2[1][1] = 2;
-
+    
     // 格式3：先指定行数，列数后续确定（不规则数组）
     int[][] arr3 = new int[3][];
     arr3[0] = new int[2]; // 第1行2列
@@ -273,7 +275,7 @@ class Cooking{
     }
 }
 ```
-    
+
 ### 2.1.2 成员变量、成员方法
 #### 成员变量
         成员变量就是属性
@@ -285,7 +287,7 @@ class Cooking{
         //boolean flg = false
         //char = 空字符
         //引用数据类型 => null
-
+    
         //变量的作用域非常小，只在当前大括号内有效
         //属性不仅在当前类有效，而且可以随着对象在其他地方使用
         //变量使用前必须初始化，属性不用，JVM会帮助我们自动完成初始化
@@ -395,7 +397,7 @@ class User{
         public void eat() {
             System.out.println("学生在食堂吃饭");
         }
-
+    
         重写 vs 重载
         重写：父子类之间，方法签名完全一样
         重载：同一个类中，方法名相同、参数不同
@@ -848,7 +850,7 @@ public class Test01 {
         value：要转String的char数组
         offset:从数组的哪个索引开始转
         count：转多少个
-
+    
         char[] chars = {'a','b','c'};
         String s1 = new String(chars,1,2);
         System.out.println(s1);
@@ -984,11 +986,11 @@ public class Test01 {
 
 # 第三章 集合框架
 ## 3.1 List集合        
-            分类：
-            a.单列集合：一个元素就一个组成部分：
-                list.add("张三")
-            b.双列集合:一个元素有两部分组成：key和value
-                map.put("1"，"张三"）-> key,value叫做键值对
+    分类：
+    	a.单列集合：一个元素就一个组成部分：
+        	list.add("张三")
+        b.双列集合:一个元素有两部分组成：key和value
+            map.put("1"，"张三"）-> key,value叫做键值对
 ![collection.jpg](img/collection.jpg)
 
 ### 3.1.1 ArrayList 与 LinkedList
@@ -1009,63 +1011,65 @@ public class Test01 {
         d.线程不安全
     3.数据结构：双向链表 
 ### 3.1.2 常用方法：增删查改(两者通用)
-        创建对象：
-            // 1. 创建 ArrayList
-                List<String> arrayList = new ArrayList<>();
-            // 2. 创建 LinkedList
-                List<String> linkedList = new LinkedList<>();
-        1.增
-            add(E e)->往集合末尾添加元素（最常用）arrayList.add("Java"); → 集合：[Java]
-            add(int index, E e)->往指定索引位置添加元素（索引从 0 开始）arrayList.add(1, "Python"); → [Java, Python]
-            addAll(Collection c)->把另一个集合的所有元素添加到当前集合末尾 
-                    List<String> list2 = Arrays.asList("C++", "Go");
-                    arrayList.addAll(list2); → [Java, Python, C++, Go]
-        2.删
-            remove(int index)->删除指定索引的元素，返回被删除的元素 arrayList.remove(1); → 删除 Python，集合变为 [Java, C++, Go]
-            remove(Object o)->删除指定内容的元素（删除第一个匹配的）arrayList.remove("Java"); → 集合变为 [C++, Go]
-        如果泛型为Integer，remove中直接传入整数，默认调用按指定索引删除元素的remove，若此时list中没有2索引，会越界
-        解决：将2包装成包装类，变成包装类后，其父类就是Object了
-        //list.remove(2)->list.remove(Integer.valueOf(2));
-            clear()	清空集合中所有元素	arrayList.clear(); → 集合变为空
-        3.查
-            get(int index)->获取指定索引的元素（最常用）	arrayList.get(0); → 获取第一个元素
-            indexOf(Object o)->获取指定元素第一次出现的索引（找不到返回 - 1）arrayList.indexOf("Go"); → 返回 1
-            lastIndexOf(Object o)->获取指定元素最后一次出现的索引	arrayList.add("Go"); arrayList.lastIndexOf("Go"); → 返回 2
-            contains(Object o)->判断集合中是否包含指定元素（返回 true/false）arrayList.contains("C++"); → true
-            isEmpty()->判断集合是否为空（返回 true/false）arrayList.isEmpty(); → false
-            size()->获取集合中元素的个数（最常用）arrayList.size(); → 3
-        4.改
-            set(int index, E e)->用指定元素替换指定索引的元素，返回被替换的元素 arrayList.set(0, "Java"); → 把第一个元素改为 Java
-        5.遍历
-            List<String> list = new ArrayList<>();
-            list.add("A");
-            list.add("B");
-            list.add("C");
-            // 方式1：普通for循环（用索引，和数组类似，ArrayList更适合）
-            for (int i = 0; i < list.size(); i++) {
-                System.out.print(list.get(i) + " ");
-            }
-            // 方式2：增强for循环（最简洁，通用）
-            for (String s : list) {
-                System.out.print(s + " ");
-            }
-            // 方式3：迭代器（遍历过程中删除元素推荐用）
-            Iterator<String> it = list.iterator();
-            while (it.hasNext()) {
-                String s = it.next();
-                System.out.print(s + " ");
-                // 遍历中删除：it.remove();
-            } 
-        注意：
-        索引从 0 开始，超出索引范围会报 IndexOutOfBoundsException（数组越界异常）
-        add(int index, E e) 插入元素时，后面的元素会 “向后移动”，不是覆盖
-        remove(Object o) 只能删除第一个匹配的元素，若有多个相同元素，需循环删除
-        
-        7.LinkedList:
-            pop()->从堆栈处弹出一个元素
+```java
+    创建对象：
+        // 1. 创建 ArrayList
+            List<String> arrayList = new ArrayList<>();
+        // 2. 创建 LinkedList
+            List<String> linkedList = new LinkedList<>();
+    1.增
+        add(E e)->往集合末尾添加元素（最常用）arrayList.add("Java"); → 集合：[Java]
+        add(int index, E e)->往指定索引位置添加元素（索引从 0 开始）arrayList.add(1, "Python"); → [Java, Python]
+        addAll(Collection c)->把另一个集合的所有元素添加到当前集合末尾 
+                List<String> list2 = Arrays.asList("C++", "Go");
+                arrayList.addAll(list2); → [Java, Python, C++, Go]
+    2.删
+        remove(int index)->删除指定索引的元素，返回被删除的元素 arrayList.remove(1); → 删除 Python，集合变为 [Java, C++, Go]
+        remove(Object o)->删除指定内容的元素（删除第一个匹配的）arrayList.remove("Java"); → 集合变为 [C++, Go]
+    如果泛型为Integer，remove中直接传入整数，默认调用按指定索引删除元素的remove，若此时list中没有2索引，会越界
+    解决：将2包装成包装类，变成包装类后，其父类就是Object了
+    //list.remove(2)->list.remove(Integer.valueOf(2));
+        clear()	清空集合中所有元素	arrayList.clear(); → 集合变为空
+    3.查
+        get(int index)->获取指定索引的元素（最常用）	arrayList.get(0); → 获取第一个元素
+        indexOf(Object o)->获取指定元素第一次出现的索引（找不到返回 - 1）arrayList.indexOf("Go"); → 返回 1
+        lastIndexOf(Object o)->获取指定元素最后一次出现的索引	arrayList.add("Go"); arrayList.lastIndexOf("Go"); → 返回 2
+        contains(Object o)->判断集合中是否包含指定元素（返回 true/false）arrayList.contains("C++"); → true
+        isEmpty()->判断集合是否为空（返回 true/false）arrayList.isEmpty(); → false
+        size()->获取集合中元素的个数（最常用）arrayList.size(); → 3
+    4.改
+        set(int index, E e)->用指定元素替换指定索引的元素，返回被替换的元素 arrayList.set(0, "Java"); → 把第一个元素改为 Java
+    5.遍历
+        List<String> list = new ArrayList<>();
+        list.add("A");
+        list.add("B");
+        list.add("C");
+        // 方式1：普通for循环（用索引，和数组类似，ArrayList更适合）
+        for (int i = 0; i < list.size(); i++) {
+            System.out.print(list.get(i) + " ");
+        }
+        // 方式2：增强for循环（最简洁，通用）
+        for (String s : list) {
+            System.out.print(s + " ");
+        }
+        // 方式3：迭代器（遍历过程中删除元素推荐用）
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()) {
+            String s = it.next();
+            System.out.print(s + " ");
+            // 遍历中删除：it.remove();
+        } 
+    注意：
+    索引从 0 开始，超出索引范围会报 IndexOutOfBoundsException（数组越界异常）
+    add(int index, E e) 插入元素时，后面的元素会 “向后移动”，不是覆盖
+    remove(Object o) 只能删除第一个匹配的元素，若有多个相同元素，需循环删除
+    
+    7.LinkedList:
+        pop()->从堆栈处弹出一个元素
 
-            push(E e)->将元素推入此列表所表示的堆栈
-### 3.1.3 底层与性能对比
+        push(E e)->将元素推入此列表所表示的堆栈
+```
+## 3.1.3 底层与性能对比
 #### ArrayList
         1.ArrayList构造方法：
             a.ArrayList()构造一个初始容量为十的空列表
@@ -1077,7 +1081,7 @@ public class Test01 {
         3.扩容多少倍？
             1.5倍
         4.扩容本质：创建一个新的更大的数组，把原数组的元素复制过去（耗时，尽量提前指定容量）
-
+    
         ArrayList<String> list = new ArrayList<String>() ->我们现在想用都是new
         但是将来开发中不会想使用就new集合，都是调用一个方法，查询出很多数据来，此方法返回一个集合，自动将查询除了的数据放到
         集合中，我们想在页面上展示数据，遍历集合
@@ -1225,30 +1229,50 @@ public class Demo01Hash{
     如果不重写hashCode方法，默认计算对象的哈希值
     如果重写了HashCode方法，计算的是对象内容的哈希值
 ### 3.2.3 hashCode 与 equals 机制
-    1. 两个方法的本质  
-        equals(Object obj)：Object 类的方法，默认比较对象地址；String、Integer 等类已重写，比较内容
-        hashCode()：Object 类的方法，返回对象的哈希码（int 整数），本质是对象的内存地址转换值
-    2. Java 规范的强制约定（必须遵守）
-        如果两个对象通过 equals() 判断为相等，那么它们的 hashCode() 必须相等；反之，hashCode() 相等的两个对象，equals() 不一定相等（哈希碰撞）。
-        简单说：equals 相等 → hashCode 一定相等；hashCode 相等 → equals 不一定相等
-    3. 为什么要同时重写？
-        如果只重写 equals()，不重写 hashCode()：
-            两个内容相同的对象，equals() 返回 true，但 hashCode() 不同（默认地址值）
-            存入 HashSet 时，会被判定为不同对象，无法去重，违反 Set 不可重复的特性
+```java
+1. 两个方法的本质  
+    equals(Object obj)：Object 类的方法，默认比较对象地址；String、Integer 等类已重写，比较内容
+    hashCode()：Object 类的方法，返回对象的哈希码（int 整数），本质是对象的内存地址转换值
+2. Java 规范的强制约定（必须遵守）
+    如果两个对象通过 equals() 判断为相等，那么它们的 hashCode() 必须相等；反之，hashCode() 相等的两个对象，equals() 不一定相等（哈希碰撞）。
+    简单说：equals 相等 → hashCode 一定相等；hashCode 相等 → equals 不一定相等
+3. 为什么要同时重写？
+    如果只重写 equals()，不重写 hashCode()：
+        两个内容相同的对象，equals() 返回 true，但 hashCode() 不同（默认地址值）
+        存入 HashSet 时，会被判定为不同对象，无法去重，违反 Set 不可重复的特性
+```
 ### 3.2.4 去重原理
-    先比hashCode,再比equals（哈希表去重）
-    1.先计算元素哈希值，再比较内容
-    2.先比较哈希值，如果哈希值不一样，存
-    3.如果哈希值一样，再比较内容
-        a.如果哈希值一样，内容不一样，存
-        b.如果哈希值一样，那内容也一样，直接去重复
-    总结：
-    1.如果HashSet存储自定义类型去重复要重写hashCode和equals方法，让HashSet比较属性的哈希值以及属性的内容
-    2.如果不重写hashCode和equals方法，默认调用Object中的，不同的对象，肯定哈希值不一样，equals比较对象的地址值不一样，使用此时即使对象的属性值一样也不能去重复
+```
+先比hashCode,再比equals（哈希表去重）
+1.先计算元素哈希值，再比较内容
+2.先比较哈希值，如果哈希值不一样，存
+3.如果哈希值一样，再比较内容
+    a.如果哈希值一样，内容不一样，存
+    b.如果哈希值一样，那内容也一样，直接去重复
+总结：
+1.如果HashSet存储自定义类型去重复要重写hashCode和equals方法，让HashSet比较属性的哈希值以及属性的内容
+2.如果不重写hashCode和equals方法，默认调用Object中的，不同的对象，肯定哈希值不一样，equals比较对象的地址值不一样，使用此时即使对象的属性值一样也不能去重复
 
-    TreeSet去重
-    TreeSet 去重的核心逻辑：基于 compareTo() 方法的返回值
-    当向 TreeSet 添加元素时，调用元素的 compareTo() 方法，与集合中已有元素比较
-    返回 0：判定为重复元素，不存储
-    返回正数 / 负数：判定为不同元素，按排序规则插入红黑树
-    一句话总结：compareTo 返回 0 = 重复，不存储
+TreeSet去重
+TreeSet 去重的核心逻辑：基于 compareTo() 方法的返回值
+当向 TreeSet 添加元素时，调用元素的 compareTo() 方法，与集合中已有元素比较
+返回 0：判定为重复元素，不存储
+返回正数 / 负数：判定为不同元素，按排序规则插入红黑树
+一句话总结：compareTo 返回 0 = 重复，不存储
+```
+
+
+
+## 3.3 Map集合
+
+
+
+<img src="D:\develop\projects\java-learning\notes\img\Map.jpg" alt="Map" style="zoom:150%;" />
+
+### 1.Map的介绍
+
+```
+1.概述：是双列集合的顶级接口
+2.
+```
+

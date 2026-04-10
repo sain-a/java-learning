@@ -1,8 +1,8 @@
 package week3_day02_Set;
 
-import week2_day06_OOP.GameRoles.Hero;
-import week2_day06_OOP.GameRoles.Mage;
-import week2_day06_OOP.GameRoles.Warrior;
+import GameRoles.Hero;
+import GameRoles.Mage;
+import GameRoles.Warrior;
 
 import java.util.HashSet;
 import java.util.Set;
