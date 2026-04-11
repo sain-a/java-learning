@@ -1,4 +1,33 @@
 # 第一章Java基础
+
+## JDK/JRE/JVM区别：
+
+```java
+1.整体关系：
+	JDK = 工具箱+运行环境
+	JRE = 运行环境
+	JVM = 真正执行程序的"机器"
+2.分别是什么
+	JVM(Java Virtual Machine)：是Java虚拟机，是核心
+		作用：运行Java字节码(.class文件)
+		特点：跨平台的关键(一次编写，到处运行)
+		本质：一个软件模拟的“计算机”
+    JRE(Java Runtime Environment)：运行Java程序所需的环境
+    	包含：JVM(必须)，Java标准类库(如String,List等)、运行工具
+    	作用：让Java程序可以运行，但不能开发(也就是说可以运行.class,不能编译.java)
+    JDK(Java Development Kit):开发工具包
+        包含：JRE，编译工具(javac),调试工具(jdb等)，打包工具(jar)
+        作用：写+编译+运行Java程序
+3.总结：
+        JVM负责执行，JRE负责运行环境，JDK负责开发+运行
+4.使用场景：
+        只运行Java程序->JRE
+        只写Java代码->JDK
+        程序执行->JVM
+```
+
+
+
 ## 1.1.1基本数据类型
 ### 整数类型：
 ```java
@@ -36,65 +65,120 @@
     int i = d(x);
     int i = (int)d;//()强制转换
 ```
-## 1.1.2基本数据类型与包装类
-    //包装类就是把基本类型的数据包装成对象
-         包装类：把基本类型变成对象,才能放进集合（比如 ArrayList）、做 null 判断、调用方法
-    | 基本数据类型 | 包装类      | 占用字节 |
-    | ----------- | ----------- | -------- | 
-    | byte        | Byte        | 1        |
-    | short       | Short       | 2        |    基本类型的数据包装成对象方案
-    | int         | Integer     | 4        |    public Integer(int value):已过时
-    | long        | Long        | 8        |    public static Integer valueOf(int i)
-    | float       | Float       | 4        |
-    | double      | Double      | 8        |
-    | char        | Character   | 2        |
-    | boolean     | Boolean     | 1        |
-    包装类的其他常见操作  "123"-->123 123-->"123"
-        可以把基本数据类型转换为字符串类型。
-        public static String toString(double d)
-        public String toString()
-        可以把字符串类型的数值转换为数值本身对应的数据类型
+## 1.1.2包装类
 ```java
-    public class Test{
-        public static void main(String[] args){
-            //获取Integer类型的对象
-            //public Integer(int value)
-            Integer i1 = new Integer(value,100);
-            System.out.println(i1);//100
-            //public static Integer valueOf(int i)
-            Integer i2 = Integer.valueOf(100);
-            System.out.println(i2);//100
-            //自动装箱：基本数据类型可以自动转换为对应的包装类型
-            //Integer i3 = Integer.valueOf(100);
-            Integer i3 = 100;
-            //自动拆箱：包装类型可以自动转换为对应的基本数据类型
-            //int num = i3.intValue();
-            int num = i3;
-            
-            //基本类型-->字符串类型
-            int num = 100;
-            //方式1：数值+"" 原因：字符串参与加法操作，加法起到的是拼接作用，拼接之后是一个新的字符串
-            String s1 = num+"";//"100"
-            //方式2: Integer类：public static String toString(int i)
-            String s2 = Integer.toString(num);//"100"
-            //方式3： Integer类：public String toString
-            Integer i = num;
-            String s3 = i.toString();//"100"
-            //方式4：String类：public static String valveOf(int i)
-            String s4 = String.valueOf(num);
-            
-            //字符串类-->基本数据类型
-            //注意：字符串中必须是数字字符
-            String s = "123";
-            //方式1：Integer类：public static int parseInt(String s)
-            int i1 = Integer.parseInt(s);
-            System.out.println(i1);//123
-            //方式2：Integer类：public static Integer valuOf(String s)
-            int i2 = Integer.valueOf(s);//自动拆箱
-        }
-    }
+//包装类就是把基本类型的数据包装成对象
+     包装类：把基本类型变成对象,才能放进集合（比如 ArrayList）、做 null 判断、调用方法
+| 基本数据类型 | 包装类      | 占用字节 |
+| ----------- | ----------- | -------- | 
+| byte        | Byte        | 1        |
+| short       | Short       | 2        |    基本类型的数据包装成对象方案
+| int         | Integer     | 4        |    public Integer(int value):已过时
+| long        | Long        | 8        |    public static Integer valueOf(int i)
+| float       | Float       | 4        |
+| double      | Double      | 8        |
+| char        | Character   | 2        |
+| boolean     | Boolean     | 1        |
+包装类的其他常见操作  "123"-->123 123-->"123"
+    可以把基本数据类型转换为字符串类型。
+    public static String toString(double d)
+    public String toString()
+    可以把字符串类型的数值转换为数值本身对应的数据类型
 ```
+###### 包装类以前用法
+
+```java
+public class Demo01IntegerTest{
+    public static void main(String[] args){
+        /*
+        public Integer(int value)							根据传递的整数创建一个Integer对象
+        public Integer(String s)  							根据传递的字符串创建
+        public static Integer valueOf(int i)				根据传递的整数创建
+        public static Integer valueOf(String s)				根据传递的字符串创建
+        public static Integer valueOf(String s,int radix)	根据传递的字符串和进制创建
+        */
+        //1.利用构造方法获取Integer对象(JDK5以前的方式)
+     	Integer i1 = new Integer(1);
+        Integer i2 = new Integer("1");
+        System.out.println(i1);//1
+        System.out.println(i2);//1
+        //2.利用静态方法获取Integer对象（JDK5以前的方式）
+      	Integer i3 = Integer.valueOf(123);
+        Integer i4 = Integer.valueOf("123");
+        Integer i5 = Integer.valueOf("123",8);
+        System.out.println(i3);//123
+        System.out.println(i4);//123
+        System.out.println(i5);//83   变为八进制再转成十进制打印
+        //3.这两种方式获取对象的区别(掌握)
+        //底层原理：
+        //因为再实际开发中，-128~127之间的数据，用的比较多
+        //如果每次使用都是new对象，那么太浪费内存
+        //所以，提前把这个范围之内的每一个数据都创建好对象
+        //如果要用到了不会创建新的，而是返回已经创建好的对象
+        Integer i6 = Integer.valueOf(127);
+        Integer i7 = Integer.valueOf(127);
+        System.out.println(i6==i7);//ture
+        Integer i8 = Integer.valueOf(128);
+        Integer i9 = Integer.valueOf(128);
+        System.out.println(i8==i9);//false,128超出数组范围，每次都是new的
+        Integer i10 = new Integer(1);
+        Integer i11 = new Integer(1);
+        System.out.println(i8==i9);//false
+    }
+}
+```
+
+```java
+public class demo02Integer {
+    public static void main(String[] args) {
+        //在以前包装类如何进行计算
+        Integer i1 = new Integer(1);
+        Integer i2 = new Integer(2);
+        //需求：要把两个数据进行相加得到3
+        //对象之间不能进行计算
+        //步骤：；
+        //1.把对象进行拆箱，变成基本数据类型
+        //2.相加
+        //3.把得到的结果再次进行装箱(再变回包装类)
+        int result = i1.intValue()+i2.intValue();
+        Integer i3 = new Integer(result);
+        System.out.println(i3);
+    }
+}
+```
+
+###### 自动装箱，自动拆箱
+
+```
+1.概述：
+	自动装箱：基本类型 → 包装类
+	自动拆箱：包装类 → 基本类型
+2.原理：
+	
+```
+
+```
+public class demo03Integer {
+    public static void main(String[] args) {
+        //在JDK5的时候提出了一个机制：自动装箱和自动拆箱
+        //自动装箱：把基本数据类型会自动的变成对应的包装类
+        //自动拆箱，把包装类自动的变成对应的基本数据类型
+
+        //在底层，此时还会去自动调用静态方法valueOf得到一个Integer
+        //自动装箱的动作
+        Integer i1 = 10;//Integer i1 = Integer.valueOF(10)
+        //自动拆箱的动作
+        int i2 = i1;//int i2 = i1.intValue()
+        //在JDK5以后，int和Integer可以看作是同一个东西，因为内部可以自动转化
+    }
+}
+
+```
+
+
+
 ## 1.1.3引用数据类型
+
     //可被引用的数据类型
 ### 类：
 ### 接口：
@@ -1261,6 +1345,91 @@ TreeSet 去重的核心逻辑：基于 compareTo() 方法的返回值
 一句话总结：compareTo 返回 0 = 重复，不存储
 ```
 
+### 3.2.5 TreeSet
+
+```java
+1.概述：TreeSet是Set的实现类
+2.特点：
+    a.对元素进行排序
+    b.无索引
+    c.不能存null
+    d.线程不安全
+    e.元素唯一
+3.数据结构：红黑树
+```
+
+```java
+构造：
+    TreeSet()->构造一个新的空set，该set根据其元素的自然顺序进行排序->ASCII
+    TreeSet(Comparator<? super E> comparator)->构造一个新的空TreeSet，它根据指定比较器进行排序
+```
+
+```java
+public class Person {
+    private String name;
+    private Integer age;
+    public Person(){}
+
+    public Person(String name,Integer age){
+        this.name = name;
+        this.age = age;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+    @Override
+    public String toString(){
+        return "Person{name="+name+",age="+age+"}";
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(name, person.name) && Objects.equals(age, person.age);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+
+```
+
+```java
+public class Demo01TreeSet {
+    public static void main(String[] args) {
+        TreeSet<String> set1 = new TreeSet<>();
+        set1.add("a.张三");
+        set1.add("b.李四");
+        set1.add("c.王五");
+        System.out.println(set1);
+        System.out.println("======================");
+        TreeSet<Person> set2 = new TreeSet<>(new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return o1.getAge()-o2.getAge();
+            }
+        });
+        set2.add(new Person("张三",18));
+        set2.add(new Person("李四",19));
+        set2.add(new Person("王五",20));
+        System.out.println(set2);
+    }
+}
+```
+
 
 
 ## 3.3 Map集合
@@ -1273,6 +1442,331 @@ TreeSet 去重的核心逻辑：基于 compareTo() 方法的返回值
 
 ```
 1.概述：是双列集合的顶级接口
-2.
+2.元素特点：
+	元素都是由key(键)，value(值)组成 -> 键值对
+	
+```
+
+### 2.HashMap的介绍和使用
+
+```java
+1.概述：HashMap是Map的实现类
+2.特点：
+	a.key唯一，value可重复->如果key重复了，会发生value覆盖
+	b.无序
+	c.无索引
+	d.线程不安全
+	e.可以存null键null值
+3.数据结构：
+	哈希表
+4.方法：
+	V put(K key，V value) -> 添加元素,返回的是被覆盖的value
+	V remove(Object key) -> 根据key删除键值对，返回的是被删除的value
+	V get(Object key) -> 根据key获取value
+	boolean containsKey(Object key) -> 判断集合中是否包含指定的key
+	Collection<V> values() -> 获取集合中所有的value，转存到Collection集合中
+	
+	Set<k> keySet()->将Map中的key获取出来，转存到Set集合中
+    Set<Map.Entry<K,V>> entrySet()->获取Map集合中的键值对，转存到Set集合中
+```
+
+```java
+public class demo01hashmap {
+    public static void main(String[] args) {
+        HashMap<String,String> map = new HashMap<>();
+//        V put(K key，V value) -> 添加元素,返回的是被覆盖的value
+        String value1 = map.put("猪八戒","嫦娥");
+        System.out.println(map);
+        System.out.println(value1);
+        String value2 = map.put("猪八戒","高翠兰");
+        System.out.println(value2);
+        System.out.println(map);
+        map.put("后裔","嫦娥");
+        map.put("二郎神","嫦娥");
+        map.put(null,null);
+        System.out.println(map);
+
+//        V remove(Object key) -> 根据key删除键值对，返回的是被删除的value
+        String value3 = map.remove("后裔");
+        System.out.println(value3);
+        System.out.println(map);
+//        V get(Object key) -> 根据key获取value
+        System.out.println(map.get("二郎神"));
+//        boolean containsKey(Object key) -> 判断集合中是否包含指定的key
+        System.out.println(map.containsKey("猪八戒"));
+//        Collection<V> values() -> 获取集合中所有的value，转存到Collection集合中
+        Collection<String> collection = map.values();
+        System.out.println(collection);
+    }
+}
+```
+
+```java
+1.概述：LinkedHashMap extends HashMap
+2.特点：
+	a.key唯一，value可重复->如果key重复了，会发生value覆盖
+	b.有序
+	c.无索引
+	d.线程不安全
+	e.可以存null键null值
+3.数据结构：
+	哈希表+双向链表
+4.使用：和HashMap一样
+```
+
+```java
+public class demo02LinkedHashMap {
+    public static void main(String[] args) {
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        map.put("八戒","嫦娥");
+        map.put("悟空","桃子");
+        map.put("悟空","梅子");
+        map.put("唐僧","国王");
+        System.out.println(map);
+    }
+}
+```
+
+### 3.HashMap的两种遍历方式
+
+#### 3.1.方式1：获取Key，根据Key再获取value
+
+```java
+Set<K> keySet() -> 将根据Map中的key获取出来，转存到Set集合中
+```
+
+```
+public class demo03HashMap {
+    public static void main(String[] args) {
+        HashMap<String,String> map = new HashMap<>();
+        map.put("猪八戒","嫦娥");
+        map.put("猪八戒","高翠兰");
+        map.put("后裔","嫦娥");
+        map.put("二郎神","哮天犬");
+
+        Set<String> set = map.keySet();//获取所有的key，保存到set集合中
+        for(String key: set){
+            //根据key获取value
+            System.out.println(key+".."+map.get(key));
+        }
+    }
+```
+
+#### 3.2.方式2：同时获取key和value
+
+```java
+Set<Map.Entry<K,V>> entrySet()->获取Map集合中的键值对，转存到Set集合中
+```
+
+```java
+1.Map的第二种遍历方式
+	a.获取记录key和value的对象
+		Map接口中的静态内部接口：Map.Entry
+	b.调用Map.Entry中的两个方法
+		getKey() 获取key
+		getValue() 获取value
+public class demo04HashMap {
+    public static void main(String[] args) {
+        HashMap<String,String> map = new HashMap<>();
+        map.put("猪八戒","嫦娥");
+        map.put("猪八戒","高翠兰");
+        map.put("后裔","嫦娥");
+        map.put("二郎神","哮天犬");
+        Set<Map.Entry<String,String>> set = map.entrySet();
+        //Set集合中保存的都是键值对 -> Map,Enry
+        //我们需要将键值对从set集合中遍历出来
+        for(Map.Entry<String,String> entry : set){
+            String key = entry.getKey();
+            String value = entry.getValue();
+            System.out.println(key+".."+value);
+        }
+    }
+}
+```
+
+### Map存储自定义对象时如何去重复
+
+```java
+public class Person {
+    private String name;
+    private Integer age;
+    public Person(){}
+
+    public Person(String name,Integer age){
+        this.name = name;
+        this.age = age;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+    @Override
+    public String toString(){
+        return "Person{name="+name+",age="+age+"}";
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(name, person.name) && Objects.equals(age, person.age);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+public class demo05HashMap {
+    public static void main(String[] args) {
+        HashMap<Person,String> map = new HashMap<>();
+        map.put(new Person("张飞",18),"河北");
+        map.put(new Person("关羽",16),"河南");
+        map.put(new Person("张飞",18),"山东");
+        System.out.println(map);
+    }
+}
+```
+
+```java
+如果key为自定义类型，去重复，需重写hashcode和equals方法，去重复过程和set一模一样，
+因为set集合的元素到了底层都是保存到了map的key位置上
+```
+
+### 4.哈希表结构存储过程
+
+```java
+1.HashMap的底层数据结构：哈希表
+2.jdk7:哈希表=数组+链表
+  jdk8:哈希表=数组+链表+红黑树
+3.
+	先算哈希值，此哈希值再HashMap底层经过了特殊的计算得出
+	如果哈希值不一样，直接存
+	如果哈希值一样，再去比较内容，如果内容不一样，也存
+	如果哈希值一样，内容也一样，直接去重复（后面的value将前面的value覆盖）
+	
+	哈希值一样，内容不一样->哈希冲突(哈希碰撞)
+4.要知道的点：
+      a.在不指定长度时，哈希表中的数组默认长度为16，HashMap创建出来，一开始没有创建长度为16的数组
+      b.什么时候创建长度为16的数组呢？在第一次put的时候，底层会创建长度为16的数组
+      c.哈希表中有一个数据[加载因子]->默认为0.75(加载因子)->代表当元素存储到百分之75的时候就要扩容->2倍
+      d.如果对个元素出现了哈希值一样，内容不一样时，就会在同一个索引上以链表的形式存储，当链表长度达到8并且当前数组长度>=64时，链表就会改成红黑树存储
+      	如果后续删除元素，那么在同一个索引位置上的元素格式小于6，红黑树会变回李娜表i
+      e.加入红黑树的目的：查询快
+变量：
+default_initial_capacity:HashMap默认容量：16
+default_load_factor:HashMap默认加载因子：0.75
+threshold:扩容的临界值	等于	容量*0.75 = 12 第一次扩容
+treeify_threshold:链表长度默认值，转为红黑树：8
+min_treeify_capacity:链表被树化时最小的数组容量：64
+  
+```
+
+1.问题：哈希表中有数组存在，但是为啥说没有索引呢？
+
+​			原因：哈希表中虽然有数组，但是set和map却没有索引，因为存数据的时候有可能在同一个索引下形成链表，如果2索引上有一条链表，那么我们要是按照索引2获取，咱们获取哪个元素呢？所以就取消了按照索引操作的机制。
+
+2.问题：为啥说HashMap是无序的，LinkedHashMap是有序的呢？
+
+​			原因：HashMap底层哈希表为单向链表
+
+<img src="D:\develop\projects\java-learning\notes\img\HM_SinglyLinkedList.png" alt="HM_SinglyLinkedList" style="zoom:80%;" />
+
+​						LinkedHashMap底层中哈希表的基础上加了一条双向链表
+
+![LHM_DoublyLinkedList](D:\develop\projects\java-learning\notes\img\LHM_DoublyLinkedList.png)
+
+### 5.TreeMap
+
+```java
+1.概述：TreeMap是Map的实现类
+2.特点：
+    a.对key进行排序
+    b.无索引
+    c.key唯一
+    d.线程不安全
+    e.不能存null
+3.数据结构：红黑树
+```
+
+```java
+构造：
+    TreeMap()->-使用键的自然顺序构造一个新的、空的映射>ASCII
+    TreeMap(Comparator<? super E> comparator)->构造一个新的、空的树映射，该映射根据给定比较器进行排序
+
+```
+
+```java
+public class Person {
+    private String name;
+    private Integer age;
+    public Person(){}
+
+    public Person(String name,Integer age){
+        this.name = name;
+        this.age = age;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+    @Override
+    public String toString(){
+        return "Person{name="+name+",age="+age+"}";
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(name, person.name) && Objects.equals(age, person.age);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+```
+
+```java
+public class Demo02TreeMap {
+    public static void main(String[] args) {
+        TreeMap<String,String> map1 = new TreeMap<>();
+        map1.put("a","张三");
+        map1.put("b","李四");
+        map1.put("c","王五");
+        System.out.println(map1);
+        System.out.println("===================");
+        TreeMap<Person,String> map2 = new TreeMap<>(new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return o1.getAge()-o2.getAge();
+            }
+        });
+        map2.put(new Person("张三",18),"北京");
+        map2.put(new Person("李四",19),"北京");
+        map2.put(new Person("王五",20),"北京");
+        System.out.println(map2);
+    }
+}
 ```
 
