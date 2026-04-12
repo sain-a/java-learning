@@ -22,4 +22,8 @@ public abstract class Hero {
     public int hashCode() {
         return name.hashCode();
     }
+
+    public void setName(String newName) {
+
+    }
 }

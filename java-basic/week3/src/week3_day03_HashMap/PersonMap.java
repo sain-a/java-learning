@@ -15,9 +15,15 @@ public class PersonMap {
         for(Person key : map.keySet()){
             System.out.println(key+".."+map.get(key));
         }
-        System.out.println("================");
         for(Map.Entry<Person,String> entry : map.entrySet()){
             System.out.println(entry.getKey()+".."+entry.getValue());
         }
+        map.forEach((Person,String)-> System.out.println(Person+"->"+ String));
+
+        System.out.println("根据key取值："+map.get(new Person("张三",18)));
+        System.out.println("是否包含key:"+map.containsKey(new Person("张三",18)));
+        System.out.println("是否包含value："+map.containsValue("天津"));
+        System.out.println("元素个数："+map.size());
+
     }
 }

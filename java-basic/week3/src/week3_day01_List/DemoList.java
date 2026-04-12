@@ -47,4 +47,17 @@ public class DemoList {
         }
         System.out.println("没有"+name);
     }
+    public static void updateHeroName(List<Hero> list, String oldName, String newName) {
+        // 1. 遍历找要修改的英雄
+        for (Hero h : list) {
+            if (h.getName().equals(oldName)) {
+                // 2. 找到 → setName 修改
+                h.setName(newName);
+                System.out.println("修改成功：" + oldName + " → " + newName);
+                return;
+            }
+        }
+        // 3. 没找到
+        System.out.println("不存在：" + oldName);
+    }
 }
