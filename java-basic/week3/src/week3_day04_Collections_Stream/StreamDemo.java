@@ -1,4 +1,4 @@
-package week3_day04_Collections;
+package week3_day04_Collections_Stream;
 
 import java.util.ArrayList;
 import java.util.Collections;
