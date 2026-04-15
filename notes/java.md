@@ -294,7 +294,66 @@ true->执行表达式1    false->执行表达式2
          arr->指向[1,2,3]
          调用 changeArr(arr)  changeArr:   arr = 地址的拷贝（指向同一个数组）
                                            arr[0] = 999->改的是同一块内存
+### 值传递栈与堆内存图
+
+```javascript
+1.Java内存分配
+	栈：方法运行时使用的内存，比如main方法运行，进入方法栈中运行
+	堆：存储对象或者数组，new来创建的，都存储在堆内存
+	方法区：存储可以运行的class文件
+	本地方法栈：JVM在使用操作系统功能的时候使用，和我们开发无关
+	寄存器：给CPU使用，和我们开发无关
+2.栈和堆的区别：
+	栈主要用于存储局部变量和方法调用，基本数据类型直接存储在栈中；
+	堆用于存储对象实例和数组；
+	引用变量存储在栈中，但指向堆中的对象；
+	栈内存由系统自动管理，堆内存由垃圾回收机制管理。
+Java只有值传递，没有引用传递，但是对象的“值”是地址(引用)
+```
+
+```Java
+public class Test01 {
+    public static void main(String[] args) {
+        Student s = new Student();
+        s.name = "Tom";
+        System.out.println(s.name);
+        change01(s);
+        System.out.println(s.name);
+    }
+    public static void change01(Student stu){
+        stu.name = "Jack";
+    }
+    public static void change02(Student stu) {
+        stu = new Student();
+        stu.name = "Alice";
+    }
+}
+```
+
+```
+public static void swap(Student s1, Student s2) {
+    Student temp = s1;
+    s1 = s2;
+    s2 = temp;
+}
+Student a = new Student("Tom");
+Student b = new Student("Jerry");
+
+swap(a, b);//不会交换，只改了s1，s2的指向
+```
+
+```
+1.方法接收的是参数的副本，无论是基本类型还是引用类型，交换的只是副本的值，而不会影响原始变量。
+2.对于对象类型，虽然可以通过引用修改对象内容，但无法通过方法交换两个引用的指向。
+总结：
+	改“对象内容” → 有效
+	改“引用指向” → 无效
+```
+
+
+
 # 第二章 面向对象
+
 ## 2.1 类与对象、封装
 ### 2.1.1 类与对象的定义
 ```java
@@ -494,7 +553,7 @@ class User{
 ## 2.3 多态
 ### 2.3.1 多态的介绍
         1.前提：
-            a.必须有子父类继承或者接口哦实现关系
+            a.必须有子父类继承或者接口实现关系
             b.必须有方法的重写（没有重写，多态没有意义），多态主要玩的方法的重写
             c.new对象：父类引用指向子类对象
                 Fu fu = new Zi()->理解为大类型接收了一个小类型的数据->比如 double b = 10
@@ -1029,7 +1088,28 @@ public class Test01 {
             System.out.println(s1); // abcd（新对象）
             System.out.println(s2); // abc（原对象未变）
             结论：s1 拼接后，指向了新的 String 对象，原对象 "abc" 内容没有任何变化，体现了不可变性。
+### 2.6.5 常量池与性能差异
+
+```java
+1.概述：JVM为了节省内存、提高效率，专门存"重复数据"的地方
+2.常见：String常量池
+    	String s1 = "abc";		
+		String s2 = "abc";
+		栈：	s1->0x001,s2->0x001	常量池(在堆里的一部分)："abc"
+3.对比new：
+            String s1 = "abc";
+			String s2 = new String("abc");
+		常量池："abc"	堆：0x002->new String("abc")
+        栈： s1->常量池 s2->堆对象
+4.为什么会有常量池：
+	a.节省内存
+    b.提高性能： 如果比较字符串a==b,如果都在常量池->非常快
+```
+
+
+
 ### 2.6.5 LocalDate等日期类
+
 #### 2.6.5.1 LocalDate本地日期
 ###### 获取LocalDate对象
         1.概述：Localate是一个不可变的日期时间对象，表示日期，通常被视为年月日
@@ -1068,7 +1148,16 @@ public class Test01 {
         // isEqual()：判断两个日期是否相等
         boolean isEqual = date1.isEqual(LocalDate.of(2026,4,4)); // true
 
+## 2.7 内部类
+
+```
+1.概述：在一个类的里面，再定义一个类
+```
+
+
+
 # 第三章 集合框架
+
 ## 3.1 List集合        
     分类：
     	a.单列集合：一个元素就一个组成部分：
@@ -1470,6 +1559,17 @@ public class Demo01TreeSet {
     Set<Map.Entry<K,V>> entrySet()->获取Map集合中的键值对，转存到Set集合中
 ```
 
+#### 2.1 Put的流程
+
+```Java
+HashMap 的 put 流程是：
+先根据 key 计算 hash 值，再定位数组下标；
+如果该位置为空则直接插入；
+如果该位置已有元素，则比较 key 是否相同，
+相同则覆盖旧值，不同则发生哈希冲突，插入链表或红黑树；
+插入后如果超过扩容阈值，则进行扩容。
+```
+
 ```java
 public class demo01hashmap {
     public static void main(String[] args) {
@@ -1527,7 +1627,7 @@ public class demo02LinkedHashMap {
 }
 ```
 
-### 3.HashMap的两种遍历方式
+### 3.HashMap的三种遍历方式
 
 #### 3.1.方式1：获取Key，根据Key再获取value
 
@@ -1583,6 +1683,20 @@ public class demo04HashMap {
     }
 }
 ```
+
+#### 3.3 forEach
+
+```Java
+JDK8风格：
+HashMap<Person,String> map = new HashMap<>();
+        map.put(new Person("张三",18),"北京");
+        map.put(new Person("李四",18),"天津");
+        map.put(new Person("张三",18),"南京");
+
+ map.forEach((Person,String)-> System.out.println(Person+"->"+ String));
+```
+
+
 
 ### Map存储自定义对象时如何去重复
 
@@ -1646,8 +1760,14 @@ public class demo05HashMap {
 
 ```java
 1.HashMap的底层数据结构：哈希表
-2.jdk7:哈希表=数组+链表
-  jdk8:哈希表=数组+链表+红黑树
+2.jdk7:哈希表=数组+链表	
+    插入方式：链表采用头插法	
+    扩容：多线程环境下扩容可能出现死循环
+    冲突严重时处理：冲突多了只能一直拉长链表
+  jdk8:哈希表=数组+链表+红黑树	
+      插入方式：链表采用尾插法	
+      扩容：优化了扩容实现，避免了这个问题。
+      冲突严重时处理：链表长到一定程度会转红黑树，提高效率
 3.
 	先算哈希值，此哈希值再HashMap底层经过了特殊的计算得出
 	如果哈希值不一样，直接存
@@ -1770,3 +1890,536 @@ public class Demo02TreeMap {
 }
 ```
 
+### 6.ConcurrentHashMap
+
+```
+
+```
+
+## 3.4 Collections 集合工具类与String API
+
+#### 3.4.1 Collections常用方法
+
+```Java
+1.概述：是集合工具类，不是集合
+2.常用API：
+	Collections.sort(list);->排序
+	Collections.sort(list,Comparator<T> c)->根据指定的规则进行排序
+	Collections.reverse(list);->反转
+	Collections.shuffle(list);->打乱List集合顺序
+	Collections.addALL(Collection<T> c,T...elements)->批量添加元素
+	Collections.copy(List<T> dest,list<T> src)->拷贝集合中的元素
+	Collections.swap(List,int i, int j)->交换集合
+    中指定元素的位置
+	Collections.max(list);
+	Collections.min(list);
+```
+
+```
+        //addAll 批量添加元素
+        ArrayList<String> list = new ArrayList<>();
+        Collections.addAll(list,"abc","bcd","qwer","df","ab");
+        System.out.println(list);
+        //shuffle 打乱
+        Collections.shuffle(list);
+        System.out.println(list);
+	
+```
+
+#### 3.4.2 Stream API核心
+
+```java
+1.作用：结合了Lambda表达式，简化集合、数组的操作
+2.使用步骤：
+	a.先得到一条stream流(流水线),并把数据放上去
+	b.使用中间方法->方法调用完毕之后，还可以调用其他方法
+	c.使用终结方法->最后一步，调用完毕之后，不能调用其他方法
+3.如何获取一条流水线？
+	单列集合 default Stream<E> stream() 	Conlection中的默认方法
+	双列集合 无 								无法直接使用
+	数组	   public static <T> Stream<T> stream(T[] array) Arrays工具类中的静态方法
+	一堆零散数据	public static<T> Stream<T> of(T... values)	Stream接口中的静态方法
+```
+
+```java
+1.单列集合获取Stream流
+        ArrayList<String> list = new ArrayList<>();
+        Collections.addAll(list,"a","a","a","a","a");
+//        //获取到一条流水线，并把集合中的数据放到流水线上
+//        Stream<String> stream1 = list.stream();
+//        //使用终结方法打印一条流水线上的所有数据
+//        stream1.forEach(new Consumer<String>() {
+//            @Override
+//            public void accept(String s) {
+//                //s:依次表示流水线上的每一个数据
+//                System.out.println(s);
+//            }
+//        });
+            list.stream().forEach(s-> System.out.println(s));
+2.双列集合获取Stream流
+		//1.创建双列集合
+        HashMap<String,Integer> hm = new HashMap<>();
+        //2.添加数据
+        hm.put("a",1);
+        hm.put("b",2);
+        hm.put("c",3);
+        //3.第一种获取stream流
+        hm.keySet().stream().forEach(s-> System.out.println(s));
+        //4.第二种获取
+        hm.entrySet().stream().forEach(s-> System.out.println(s));
+3.数组获取Stream流
+		 //1.创建数组
+        int[] arr = {1,2,3,4,5};
+        String[] arr2 = {"a","b","c"};
+        //2.获取Stream流
+        Arrays.stream(arr).forEach(s-> System.out.println(s));
+        Arrays.stream(arr2).forEach(s -> System.out.println(s));
+注意：Stream接口中静态方法of的细节
+    方法的形参是一个可变参数，可以传递一堆零散的数据，也可以传递数组
+    但是数组必须是引用数据类型的，如果传递基本数据类型，是会把整个数组当作一个元素，放到Stream流
+		Stream.of(arr2).forEach(s -> System.out.println(s));
+		Stream.of(arr1).forEach(s -> System.out.println(s));//X
+4.一堆零散数据获取Stream流
+     	Stream.of(1,2,3,4,5).forEach(s-> System.out.println(s));
+        Stream.of("a","b","c").forEach(s -> System.out.println(s));
+```
+
+##### Stream流的中间方法
+
+```Java
+1.filter(筛选)
+	    ArrayList<String> list = new ArrayList<>();
+        list.add("张无忌");
+        list.add("周芷若");
+        list.add("赵敏");
+        list.add("张强");
+        list.add("张三丰");
+
+        list.stream()
+            .filter(name->name.startsWith("张"))
+            .filter(name->name.length()==3)
+            .forEach(name->System.out.println(name));
+
+2.limit->获取前几个元素
+    	list.stream().limit(3)
+                .forEach(s-> System.out.println(s));
+3.skip->跳过前几个元素
+    	list.stream().skip(4)
+                .forEach(s-> System.out.println(s));
+4.distinct->元素去重(依赖hashCode、equals方法)
+    	list.stream().distinct().forEach(s -> System.out.println(s));
+5.concat->合并两个流为一个流
+    	ArrayList<String> list1 = new ArrayList<>();
+        Collections.addAll(list1,"张无忌","周芷若");
+
+        ArrayList<String> list2 = new ArrayList<>();
+        Collections.addAll(list2,"赵敏","张三丰");
+
+        Stream.concat(list1.stream(),list2.stream())
+            	.forEach(s -> System.out.println(s));
+6.map->转换数据流中的类型
+		ArrayList<String> list = new ArrayList<>();
+        Collections.addAll(list,"张-15","周-14","赵-13","王-20");
+        //只获取里面的年龄并进行打印
+        list.stream()
+                .map(s -> Integer.parseInt(s.split("-")[1]))
+                .forEach(s-> System.out.println(s));
+
+```
+
+```
+注意:
+	1.中间方法，返回新的Stream流只能使用一次，建议使用链式编程
+	2.修改Stream流中的数据，不会影响原来集合或者数组中的数据
+```
+
+##### Stream流的终结方法
+
+```Java
+1.void forEach() ->遍历
+2.long count()->统计
+3.toArray()->收集流中的数据，放到数组中
+		ArrayList<String> list1 = new ArrayList<>();
+        Collections.addAll(list1,"张无忌","周芷若");
+        //2.count
+        long count = list1.stream().count();
+        System.out.println(count);
+        //3.toArray
+        Object[] arr1 = list1.stream().toArray();
+        System.out.println(Arrays.toString(arr1));
+
+        String[] arr2 = list1.stream().toArray(value -> new String[value]);
+        System.out.println(Arrays.toString(arr2));
+```
+
+```
+4.collect()->收集流中的数据，放到集合中
+    	ArrayList<String> list1 = new ArrayList<>();
+        Collections.addAll(list1,"张-男-10","王-男-11","周-女-10","李-男-11");
+        //收集到List集合中
+        //需求：把所有男收集起来
+        List<String> newList = list1.stream()
+                .filter(s->"男".equals(s.split("-")[1]))
+                .collect(Collectors.toList());
+		System.out.println(newList);
+		//收集到Set集合中
+        //需求：把所有男收集起来
+       Set<String> newSet =  list1.stream()
+                .filter(s->"男".equals(s.split("-")[1]))
+                .collect(Collectors.toSet());
+        System.out.println(newSet);
+		ArrayList<String> list1 = new ArrayList<>();
+        Collections.addAll(list1,"张-男-10","王-男-11","周-女-10","李-男-11");
+        //收集到Map集合中
+        //注意：如果我们要收集到Map集合中，键不能重复，否则会报错
+        //需求：把所有男收集起来
+        //键：姓名 值：年龄
+        // toMap参数一：表示键的生成规则
+        //  Function泛型一：表示流中每一个数据的类型
+        //          泛型二：表示Map集合中键的数据类型
+        //          方法apply形参：依次表示流里面的每一个数据 张-男-10
+        //                  方法体:生成键的代码
+        //                  返回值：已经生成的键
+        // toMap参数二：表示值的生成规则
+        //  Function泛型一：表示流中每一个数据的类型
+        //          泛型二：表示Map集合中值的数据类型
+        //          方法apply形参：依次表示流里面的每一个数据 张-男-10
+        //                  方法体:生成值的代码
+        //                  返回值：已经生成的值
+       Map<String,Integer> newMap =  list1.stream()
+                .filter(s->"男".equals(s.split("-")[1]))
+                .collect(Collectors.toMap(new Function<String, String>() {
+                    @Override
+                    public String apply(String s) {
+                        return s.split("-")[0];
+                    }
+                }, new Function<String, Integer>() {
+                    @Override
+                    public Integer apply(String s) {
+                        return Integer.parseInt(s.split("-")[2]);
+                    }
+                }));
+        Map<String,Integer> newMap =  list1.stream()
+                .filter(s->"男".equals(s.split("-")[1]))
+                .collect(Collectors.toMap(
+                s->s.split("-")[0],
+                s->Integer.parseInt(s.split("-")[2])));
+        System.out.println(newMap);
+		
+```
+
+#### 3.4.3 惰性原理求值
+
+```
+1.定义
+	中间操作不会立即执行，只构建操作流程；只有终结操作触发，才真正遍历执行。
+2.优点
+	a.只遍历一次，性能更高
+	b.避免无效循环
+	c.符合函数式编程思想
+```
+
+#### 3.4.4 函数式编程
+
+```Java
+1.概述：函数式编程是一种思想特点
+	面向对象：先找对象，让对象做事情
+	函数式编程思想，忽略面向对象的复杂语法，强调坐什么，而不是谁去做
+	
+	声明式编程只写要做什么，不写循环、下标等实现细节。
+	行为参数化将逻辑（Lambda）作为参数传递给方法。
+	无副作用不修改原数据，不改变外部变量。
+```
+
+#### 3.4.5 Lambda     表达式
+
+```Java
+1.概述：是函数式编程思想的一种体现
+    	Lambda表达式是JDK8开始后的一种新语法形式
+2.格式： ()->{}
+		()->对应方法的形参
+        ->	固定格式
+        {}->对应方法的方法体 
+```
+
+```Java
+Arrays.sort(arr,new Comparater<Integer>(){	  |Arrays.sort(arr,(Integer o1,Integer o2)->{
+	@Override								  | 		return o1-02;
+	public int compare(Integer o1,Integer o2){|		}
+		return o1-o2;						  |);
+	}
+});
+注意：
+Lambda表达式可以用来简化匿名内部类的书写
+Lambda表达式只能简化函数式接口的匿名内部类的写法
+
+函数式接口：
+	有且仅有一个抽象方法的接口叫做函数式接口，接口上方可以加@FunctionalInterface注解->用于验证
+```
+
+```Java
+3.好处：Lambda是一个匿名函数，让代码更加简洁，让我们更关注于方法体，而不是受限于面向对象的语法特点
+4.Lambda表达式的省略写法
+	省略核心：可推导，可省略
+	规则：
+		a.参数类型可以省略不写
+		b.如果只有一个参数，参数类型可以省略，同时()也可以省略
+		c.如果Lambda表达式的方法体只有一行，大括号、分号、return可以省略不写，需要同时省略。
+```
+
+```Java
+public class Test {
+    public static void main(String[] args) {
+        Integer[] arr = {2,3,1,5,6,7,8,4,9};
+        //1.匿名内部类形式
+//        Arrays.sort(arr, new Comparator<Integer>() {
+//            @Override
+//            public int compare(Integer o1, Integer o2) {
+//                return o1-o2;
+//            }
+//        });
+//        //2.Lambda表达式完整格式
+//        Arrays.sort(arr,(Integer o1,Integer o2) -> {
+//            return o1-o2;
+//            }
+//        );
+        //3.省略格式
+        Arrays.sort(arr,(o1, o2) -> o1-o2);
+
+        System.out.println(Arrays.toString(arr));
+    }
+}
+```
+
+
+
+#### 3.4.6 方法引用
+
+```
+1.概述：把已经有的方法拿过来用，当做函数式接口中抽象方法的方法体
+2.要求：	
+	引用处必须是函数式接口
+	a.被引用的方法必须已经存在
+	b.被引用方法的形参和返回值需要跟抽象方法保持一致
+	c.被引用方法的功能要满足当前要求
+3.方法引用符::
+```
+
+```Java
+public class Test {
+    public static void main(String[] args) {
+        Integer[] arr = {2,3,1,5,6,7,8,4,9};
+          //匿名内部类
+        Arrays.sort(arr, new Comparator<Integer>() {
+          @Override
+          public int compare(Integer o1, Integer o2) {
+              return o2-o1;
+          }});
+        //Lambda表达式
+        Arrays.sort(arr,(Integer o1, Integer o2) -> {
+            return o2-o1;
+        });
+        //最简Lambda表达式：
+        Arrays.sort(arr,((o1, o2) -> o2-o1));
+        //方法引用
+        Arrays.sort(arr,Test::s);
+        System.out.println(Arrays.toString(arr));
+        }
+        public static int s(int n1,int n2){
+            return n2-n1;
+    }
+}
+```
+
+```JAVA
+public class Test {
+    public static void main(String[] args) {
+        Integer[] arr = {2,3,1,5,6,7,8,4,9};
+          //匿名内部类
+        Arrays.sort(arr, new Comparator<Integer>() {
+          @Override
+          public int compare(Integer o1, Integer o2) {
+              return o2-o1;
+          }});
+        //Lambda表达式
+        Arrays.sort(arr,(Integer o1, Integer o2) -> {
+            return o2-o1;
+        });
+        //最简Lambda表达式：
+        Arrays.sort(arr,((o1, o2) -> o2-o1));
+        //方法引用
+        Arrays.sort(arr,Test::s);
+        System.out.println(Arrays.toString(arr));
+        }
+        public static int s(int n1,int n2){
+            return n2-n1;
+    }
+}
+```
+
+##### 1.方法引用的分类
+
+```
+1.引用静态方法
+2.引用成员方法
+	a.引用其他类的成员方法
+	b.引用本类的成员方法
+	c.引用父类的成员方法
+3.引用构造方法
+4.其他调用方式：
+	a.使用类名引用成员方法
+	b.引用数组的构造方法
+```
+
+##### 2.引用静态方法
+
+```
+1.格式：	类名::静态方法
+```
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<>();
+        Collections.addAll(list,"1","2","3","4","5");
+
+        list.stream().map(new Function<String,Integer>(){
+            @Override
+            public Integer apply(String s){
+                int i = Integer.parseInt(s);
+                return i;
+            }
+        }).forEach(s-> System.out.println(s));
+
+        list.stream()
+                .map(Integer::parseInt)
+                .forEach(s->System.out.println(s));
+    }
+}
+```
+
+##### 3.引用成员方法
+
+```
+1.格式： 对象::成员方法
+	a.其他类：其他类对象::方法名
+	b.本类：this::方法名		本类和父类引用处不能是静态方法
+	c.父类：super::方法名
+```
+
+```
+public class StringOperation {
+    public boolean stringJudge(String s){
+        return s.startsWith("张")&&s.length()==3;
+    }
+}
+public class Test {
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<>();
+        Collections.addAll(list,"张无忌","周芷若","赵敏","张强","张三丰");
+//        list.stream()
+//                .filter(s -> s.startsWith("张"))
+//                .filter(s->s.length()==3)
+//                .forEach(s-> System.out.println(s));
+
+//        list.stream().filter(new Predicate<String>() {
+//            @Override
+//            public boolean test(String s) {
+//                return s.startsWith("张")&&s.length()==3;
+//            }
+//        }).forEach(s -> System.out.println(s));
+
+        //其他类
+//        list.stream()
+//                .filter(new StringOperation()::stringJudge)
+//                .forEach(s -> System.out.println(s));
+
+        //本类
+        list.stream()
+                .filter(Test::stringJudge)
+                .forEach(s -> System.out.println(s));
+
+    }
+    public static boolean stringJudge(String s){
+        return s.startsWith("张")&&s.length()==3;
+    }
+}
+```
+
+##### 4.引用构造方法
+
+```
+1.格式：	类名::new
+```
+
+```
+public class Student {
+    private String name;
+    private int age;
+    public Student(){
+    }
+
+    public Student(String str) {
+        String[] arr = str.split(",");
+        String name = arr[0];
+        int age = Integer.parseInt(arr[1]);
+    }
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+public class Test01 {
+    public static void main(String[] args) {
+        //1.创建集合对象
+        ArrayList<String> list =new ArrayList<>();
+        //2.添加数据
+        Collections.addAll(list,"张三丰,15","张无忌,16","周芷若,17");
+        //3.封装成Student对象并收集到List集合中
+//        List<Student> newList =  list.stream().map(new Function<String, Student>() {
+//            @Override
+//            public Student apply(String s) {
+//                String[] arr = s.split(",");
+//                String name = arr[0];
+//                int age = Integer.parseInt(arr[1]);
+//                return  new Student(name,age);
+//            }
+//        }).collect(Collectors.toList());
+//        System.out.println(newList);
+        List<Student> newList = list.stream().map(Student::new)
+                .collect(Collectors.toList());
+        System.out.println(newList);
+    }
+}
+```
+
+##### 5.类名引用成员方法
+
+##### 6.引用数组的构造方法
+
+#### 3.4.6 Stream     综合案例、性能对比
+
+```
+
+```
+
+
+
+# 第四章 IO流与文件操作
