@@ -1,4 +1,4 @@
-package study.base02;
+package com.study.base02;
 
 import org.junit.Test;
 

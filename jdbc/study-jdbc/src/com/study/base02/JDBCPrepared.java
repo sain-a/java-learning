@@ -1,4 +1,4 @@
-package study.base02;
+package com.study.base02;
 
 import java.sql.*;
 import java.util.Scanner;
@@ -7,7 +7,7 @@ public class JDBCPrepared {
     public static void main(String[] args) throws Exception {
         //1.注册驱动(可省略)
         //2.获取连接对象
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:306/study_sql", "root", "123456");
+        Connection connection = DriverManager.getConnection("jdbc:mysql:///study_sql", "root", "123456");
 
         //3.获取执行SQL语句对象
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM student WHERE name = ?");
